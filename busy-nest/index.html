@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; font-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="color-scheme" content="light dark">
+<title>Busy Nest — Free Demo</title>
+<style>
+:root{
+  --sans: ui-rounded,"SF Pro Rounded","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,"Noto Sans Thai",sans-serif;
+  --serif: "Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --bg:#F4F3EE;--card:#FFFFFF;--soft:#ECEFE8;--line:#E2E5DD;--ink:#1F2A26;--muted:#5E6A63;--accent:#4F7C67;--accent-2:#E58A6B;--gold:#E1B04B;--good:#3E8A62;--bad:#C4553F;
+  --on-accent:#FFFFFF;--on-accent-2:#1F2A26;--focus-bg:#1F2A26;--focus-ink:#F4F3EE;--accent-ink:#4F7C67;--accent2-ink:#B4553A;--good-ink:#3E8A62;--gold-ink:#8A6A1F;
+  --shadow:0 1px 2px rgba(31,42,38,.04),0 12px 32px rgba(31,42,38,.06);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans)}
+h1,h2,h3,.serif{font-family:var(--serif);font-weight:500;letter-spacing:-.015em;margin:0}
+h1{font-size:40px;line-height:1.1}
+h2{font-size:22px;line-height:1.2}
+h3{font-size:18px}
+p{margin:0 0 .6em}
+a{color:var(--accent-ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--muted);margin-bottom:6px}
+.muted{color:var(--muted)} .small{font-size:13.5px} .tiny{font-size:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;z-index:200;background:var(--card);padding:8px 14px;border-radius:999px}
+.skip:focus{left:8px}
+
+/* layout */
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;padding:24px 14px;display:flex;flex-direction:column;gap:18px;border-right:1px solid var(--line);background:var(--bg)}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px}
+.brand b{font-family:var(--serif);font-weight:500;font-size:21px;display:block;line-height:1.1}
+.brand span{font-size:11.5px;line-height:1.3;color:var(--muted);font-style:italic;font-family:var(--serif);display:block}
+.nav{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;color:var(--ink);text-decoration:none;font-weight:600;font-size:15px}
+.nav a:hover{background:var(--soft)}
+.nav a[aria-current=page]{background:var(--card);box-shadow:var(--shadow);color:var(--accent-ink)}
+.nav svg,.ico{width:22px;height:22px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.side-foot{margin-top:auto;font-size:12px;color:var(--muted);padding:0 8px}
+.main{min-width:0;padding:0 40px 90px;max-width:1220px;width:100%;justify-self:center}
+.topbar{display:flex;align-items:center;gap:10px;padding:18px 0 10px;flex-wrap:wrap}
+.topbar .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;flex:none}
+.chip.bad{background:color-mix(in srgb,var(--bad) 12%,var(--card));border-color:var(--bad);color:var(--ink)}
+.chip.bad .dot{background:var(--bad)}
+.view{min-width:0}
+.view section{margin-bottom:22px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:14px 0 22px}
+.head .lead{color:var(--muted);margin-top:6px;max-width:640px}
+.foot{color:var(--muted);font-size:12.5px;margin-top:40px;padding-top:16px;border-top:1px solid var(--line)}
+
+/* cards & grids */
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);min-width:0;position:relative}
+.card-t{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.card-t h2,.card-t h3{font-size:20px}
+.card-t .sp{flex:1}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:18px}
+.kpi .k{font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:var(--muted)}
+.kpi .v{font-family:var(--serif);font-size:30px;line-height:1.15;margin:6px 0 2px;overflow-wrap:anywhere}
+.kpi .s{font-size:13px;color:var(--muted)}
+.kpi.good .v{color:var(--good-ink)} .kpi.gold .v{color:var(--gold-ink)} .kpi.warm .v{color:var(--accent2-ink)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;font-weight:700;font-size:14px;padding:10px 18px;border:1px solid transparent;cursor:pointer;background:var(--soft);color:var(--ink);min-height:40px;text-decoration:none;white-space:nowrap}
+.btn:hover{filter:brightness(.97)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:transparent;border-color:var(--line)}
+.btn.danger{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn.sm{padding:6px 12px;font-size:13px;min-height:32px}
+.btn.link{background:none;padding:0;min-height:0;border:0;text-decoration:underline;color:var(--accent-ink);font-weight:600}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.help{width:21px;height:21px;border-radius:50%;border:1px solid var(--line);background:var(--soft);color:var(--muted);font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:none}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink);white-space:nowrap}
+.tag.good{background:color-mix(in srgb,var(--good) 16%,var(--card));color:var(--ink)}
+.tag.bad{background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--ink)}
+.tag.warm{background:color-mix(in srgb,var(--accent-2) 20%,var(--card));color:var(--ink)}
+.tag.gold{background:color-mix(in srgb,var(--gold) 25%,var(--card));color:var(--ink)}
+.banner{border-radius:18px;padding:14px 18px;margin:8px 0 16px;background:color-mix(in srgb,var(--gold) 18%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.banner.bad{background:color-mix(in srgb,var(--bad) 12%,var(--card));border-color:var(--bad)}
+.banner.info{background:color-mix(in srgb,var(--accent) 10%,var(--card));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.banner p{margin:0;flex:1;min-width:220px}
+
+/* hero */
+.hero{overflow:hidden;background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 60%),radial-gradient(70% 60% at 100% 0%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 70%),var(--card)}
+.big{font-family:var(--serif);font-size:clamp(66px,9vw,112px);line-height:1;letter-spacing:-.03em;margin:8px 0 6px;display:flex;align-items:baseline;flex-wrap:wrap}
+.big .sym{font-size:.4em;margin:0 .08em;color:var(--muted)}
+.big .frac{font-size:.42em;color:var(--accent-ink)}
+.hero .sub{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--muted);margin-bottom:14px}
+.bar{height:10px;border-radius:999px;background:var(--soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.bar.over>i{background:var(--accent-2)}
+.bar.gold>i{background:var(--gold)} .bar.good>i{background:var(--good)} .bar.warm>i{background:var(--accent-2)}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.qbtn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px;cursor:pointer;min-height:40px}
+.qbtn:hover{background:var(--soft)}
+.divider{border-top:1.5px dashed var(--line);margin:14px 0}
+
+/* focus card */
+.focus{background:var(--focus-bg);color:var(--focus-ink);border-radius:24px;padding:22px;display:flex;gap:16px;align-items:flex-start;margin-bottom:18px;box-shadow:var(--shadow)}
+.focus .em{width:46px;height:46px;border-radius:50%;background:color-mix(in srgb,var(--focus-ink) 14%,transparent);display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.focus .eyebrow{color:color-mix(in srgb,var(--focus-ink) 70%,transparent)}
+.focus .txt{font-family:var(--serif);font-size:25px;line-height:1.2}
+.focus .sub{opacity:.82;margin:6px 0 12px}
+.focus .btn.ghost{color:var(--focus-ink);border-color:color-mix(in srgb,var(--focus-ink) 35%,transparent)}
+.focus .btn.soft{background:color-mix(in srgb,var(--focus-ink) 14%,transparent);color:var(--focus-ink)}
+
+/* lists */
+.list{list-style:none;margin:0;padding:0}
+.li{display:flex;gap:12px;align-items:center;padding:10px 6px;border-bottom:1px solid var(--line);border-radius:12px;min-width:0}
+.li:last-child{border-bottom:0}
+.li[data-act]{cursor:pointer}
+.li[data-act]:hover{background:var(--soft)}
+.tile{width:38px;height:38px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.li .mid{flex:1;min-width:0}
+.li .t{font-weight:700;overflow-wrap:anywhere}
+.li .k{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.amt{font-family:var(--serif);font-size:18px;white-space:nowrap}
+.amt.in{color:var(--good-ink)}
+.empty{color:var(--muted);padding:12px 4px}
+.empty .btn{margin-top:8px}
+.wrapr{flex-wrap:wrap}
+.coming{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.ctile{background:var(--soft);border-radius:16px;padding:12px}
+.ctile .d{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.ctile .n{font-weight:700;margin:2px 0;overflow-wrap:anywhere}
+.ctile .a{font-family:var(--serif);font-size:19px}
+.ctile.inc .a{color:var(--good-ink)}
+.wins .li{border:0;padding:6px 0}
+.tick{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;color:transparent}
+.tick.on{background:var(--good);border-color:var(--good);color:#fff;animation:pop .4s}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+.cheer{font-family:var(--serif);font-style:italic;color:var(--accent-ink);margin:8px 0}
+.pill{display:inline-flex;gap:6px;align-items:center;background:var(--soft);border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px}
+.dump input[type=text]{width:100%}
+.note{display:flex;gap:10px;align-items:center;padding:6px 0}
+.note.done span{text-decoration:line-through;color:var(--muted)}
+.note span{flex:1;overflow-wrap:anywhere}
+.x{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:50%}
+.x:hover{background:var(--soft)}
+
+/* forms */
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=search],select,textarea{width:100%;min-height:44px;padding:9px 13px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+input[type=color]{width:52px;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:2px}
+textarea{resize:vertical;min-height:110px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;min-width:0}
+.field>label,.field>.lbl{font-weight:700;font-size:14px}
+.field .hint{font-size:12.5px;color:var(--muted)}
+.field .prev{font-size:12.5px;color:var(--accent-ink);font-weight:700;min-height:1em}
+.field .ferr{font-size:13px;color:var(--bad);font-weight:700}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.seg{display:inline-flex;background:var(--soft);border-radius:999px;padding:4px;gap:4px;flex-wrap:wrap}
+.seg label{display:flex;align-items:center;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--card);box-shadow:var(--shadow);color:var(--accent-ink)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent)}
+.catpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.catpick label{border:1px solid var(--line);border-radius:14px;padding:8px 6px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:2px;overflow-wrap:anywhere}
+.catpick label span{font-size:20px}
+.catpick input{position:absolute;opacity:0;pointer-events:none}
+.catpick label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--card))}
+.catpick label:has(input:focus-visible){outline:2px solid var(--accent)}
+.bigamt{display:flex;align-items:center;justify-content:center;gap:4px;border-radius:20px;background:var(--soft);padding:10px}
+.bigamt span{font-family:var(--serif);font-size:30px;color:var(--muted)}
+.bigamt input{font-family:var(--serif);font-size:58px;text-align:center;border:0;background:transparent;min-height:0;padding:0;width:100%;max-width:340px}
+.bigamt input:focus{outline:none}
+.bigamt:focus-within{outline:2px solid var(--accent)}
+.chips{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.emojirow{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.emojirow button{border:1px solid var(--line);background:var(--card);border-radius:10px;font-size:18px;width:36px;height:36px;cursor:pointer;padding:0}
+.check{display:flex;gap:10px;align-items:center;font-weight:600}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* modal layers */
+.layer{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(17,21,19,.42)}
+#modal{z-index:50} #confirm{z-index:70}
+.sheet{background:var(--card);color:var(--ink);border-radius:26px;padding:24px;width:100%;max-width:560px;max-height:calc(100vh - 40px);overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.25);position:relative}
+.sheet.wide{max-width:760px}
+.sheet h2{margin-bottom:14px;padding-right:30px}
+.sheet .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.sheet .actions .sp{flex:1}
+.how{width:100%;border-collapse:collapse}
+.how td{padding:6px 4px;border-bottom:1px solid var(--line)}
+.how td:last-child{text-align:right;font-family:var(--serif);white-space:nowrap}
+.how tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
+
+/* toast & tooltip */
+#toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:95;pointer-events:none;display:flex;justify-content:center;width:max-content;max-width:calc(100vw - 32px)}
+#toast .t{background:var(--ink);color:var(--bg);border-radius:999px;padding:11px 18px;font-weight:700;font-size:14px;display:flex;gap:12px;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+#toast button{pointer-events:auto;background:none;border:1px solid color-mix(in srgb,var(--bg) 50%,transparent);color:var(--bg);border-radius:999px;padding:4px 12px;font-weight:800;cursor:pointer}
+#tip{position:fixed;z-index:90;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;font-weight:700;border-radius:10px;padding:6px 10px;white-space:nowrap;display:none}
+
+.fab{display:none}
+/* charts */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--sans)}
+.chart .grid{stroke:var(--line)}
+.chart g.col{cursor:default}
+.chart g.col[data-act]{cursor:pointer}
+.chart:hover g.col{opacity:.5}
+.chart:hover g.col:hover{opacity:1}
+.chart .hit{fill:transparent}
+.chart .hl{stroke:var(--ink);stroke-width:1.5}
+.anim .chart rect.b{animation:grow .65s cubic-bezier(.2,.8,.2,1) both;transform-box:fill-box;transform-origin:bottom}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.anim .donut g.segs{animation:spin .8s cubic-bezier(.2,.8,.2,1) both;transform-origin:95px 95px}
+@keyframes spin{from{transform:rotate(-70deg) scale(.86);opacity:0}to{transform:none;opacity:1}}
+.legendc{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;font-weight:700;color:var(--muted);margin-top:6px}
+.legendc i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.donutwrap{display:grid;grid-template-columns:190px minmax(0,1fr);gap:18px;align-items:center}
+.donut{width:190px;height:190px}
+.donut circle.seg{transition:stroke-width .15s,opacity .15s;cursor:default}
+.donut circle.seg[data-act]{cursor:pointer}
+.donut text{pointer-events:none;fill:var(--ink)}
+.donut .cl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;fill:var(--muted)}
+.donut .cv{font-family:var(--serif);font-size:21px}
+.donut .cp{font-size:11px;fill:var(--muted);font-weight:700}
+.dleg{list-style:none;margin:0;padding:0}
+.dleg li{display:flex;gap:8px;align-items:center;padding:5px 6px;border-radius:10px;font-size:13.5px;transition:opacity .15s}
+.dleg li[data-act]{cursor:pointer}
+.dleg li:hover{background:var(--soft)}
+.dleg .dt{width:10px;height:10px;border-radius:50%;flex:none}
+.dleg .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.dleg .pc{color:var(--muted);font-size:12px;width:38px;text-align:right}
+.dleg .av{font-family:var(--serif);white-space:nowrap}
+.donutwrap.hl circle.seg{opacity:.2}
+.donutwrap.hl circle.seg.on{opacity:1;stroke-width:31}
+.donutwrap.hl .dleg li{opacity:.4}
+.donutwrap.hl .dleg li.on{opacity:1}
+.ring text{font-family:var(--serif);font-size:17px;fill:var(--ink)}
+
+/* tables */
+.tw{overflow-x:auto;max-width:100%}
+table.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr[data-act]{cursor:pointer}
+.tbl tr[data-act]:hover td{background:var(--soft)}
+.tbl .num{text-align:right;white-space:nowrap;font-family:var(--serif);font-size:16px}
+.tbl .mcat{display:none;font-size:12px;color:var(--muted)}
+.tbl td.w{overflow-wrap:anywhere}
+
+/* themes */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.ttile{border:1.5px solid var(--line);border-radius:18px;padding:10px;cursor:pointer;background:var(--card);text-align:left;position:relative;color:var(--ink)}
+.ttile.on{border:2.5px solid var(--accent)}
+.ttile .ck{position:absolute;top:8px;right:10px;font-weight:800;color:var(--accent-ink)}
+.tprev{border-radius:12px;height:78px;padding:8px;display:flex;gap:6px;margin-bottom:8px}
+.tprev .mini{flex:1;background:#fff;border-radius:8px;padding:6px;display:flex;flex-direction:column;gap:5px}
+.tprev .pb{height:9px;width:46px;border-radius:999px}
+.tprev .ln{height:4px;border-radius:99px}
+.tprev .bars{display:flex;gap:3px;align-items:flex-end;height:22px}
+.tprev .bars i{flex:1;border-radius:2px}
+.tprev .tabsw{display:flex;flex-direction:column;gap:3px;width:12px}
+.tprev .tabsw i{flex:1;border-radius:4px 0 0 4px}
+.ttile b{display:block;font-size:14px}
+.ttile span{font-size:12px;color:var(--muted)}
+
+/* guide */
+.guide ol li,.guide ul li{margin-bottom:6px}
+
+/* focus mode */
+body.focusmode .nofocus{display:none !important}
+
+/* recovery */
+.recov{max-width:760px;margin:40px auto;padding:0 16px}
+
+/* motion */
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+
+/* tablet */
+@media (max-width:1100px){
+  .app{grid-template-columns:220px minmax(0,1fr)}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3,.hero-grid{grid-template-columns:minmax(0,1fr)}
+  .main{padding:0 24px 90px}
+}
+/* mobile */
+@media (max-width:860px){
+  .app{display:block}
+  .side{position:fixed;left:0;right:0;bottom:0;top:auto;height:auto;z-index:40;padding:6px 6px calc(6px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid var(--line);background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex-direction:row}
+  .brand,.side-foot{display:none}
+  .nav{flex-direction:row;overflow-x:auto;gap:2px;width:100%;scrollbar-width:none}
+  .nav a{flex-direction:column;gap:2px;font-size:11px;padding:6px 10px;min-width:64px;border-radius:12px;white-space:nowrap}
+  .main{padding:0 16px 150px}
+  h1{font-size:32px}
+  .topbar .logbtn{display:none}
+  .fab{display:flex;position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:30px;border:0;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:41;align-items:center;justify-content:center;cursor:pointer}
+  #toast{bottom:160px}
+  .g2{grid-template-columns:minmax(0,1fr)}
+  .donutwrap{grid-template-columns:minmax(0,1fr);justify-items:center}
+  .dleg{width:100%}
+  .tbl .hm{display:none}
+  .tbl .mcat{display:block}
+}
+/* small phones */
+@media (max-width:600px){
+  .layer{align-items:flex-end;padding:0}
+  .sheet{border-radius:26px 26px 0 0;max-height:94vh;max-width:none}
+  .fgrid{grid-template-columns:minmax(0,1fr)}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .kpi .v{font-size:22px}
+  .card{padding:16px;border-radius:20px}
+  .li.wrapr{flex-wrap:wrap}
+  .li.wrapr .btns{width:100%;display:flex;gap:8px;flex-wrap:wrap;padding-left:50px}
+  .focus{flex-direction:column}
+}
+@media print{
+  body{background:#fff}
+  .side,.topbar,.fab,#toast,.noprint,.btn,.help,#sampleBanner,.foot{display:none !important}
+  .app{display:block}
+  .main{padding:0;max-width:none}
+  .card{box-shadow:none;break-inside:avoid}
+}
+
+/* ---------- Busy Nest ---------- */
+.qbtn.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.fchips{margin-bottom:14px}
+.fchips .qbtn{display:inline-flex;align-items:center;gap:6px}
+.mdot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none;background:var(--mc,#9AA19D)}
+.dots{display:inline-flex;gap:3px;align-items:center}
+.ev{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;width:100%;text-align:left;border:0;border-left:4px solid var(--ec);background:color-mix(in srgb,var(--ec) 14%,var(--card));color:var(--ink);border-radius:8px;padding:5px 7px;font-size:12.5px;line-height:1.25;cursor:pointer;min-width:0}
+.ev:hover{background:color-mix(in srgb,var(--ec) 24%,var(--card))}
+.ev .et{font-weight:800;white-space:nowrap;font-size:11.5px}
+.ev .en{order:3;flex-basis:100%;min-width:0;overflow-wrap:break-word;font-weight:600}
+.ev .dots,.ev>.tiny{margin-left:auto}
+.ev .cf{order:2}
+.ev.conf{outline:2px solid var(--bad);outline-offset:-1px}
+.ev .cf{color:var(--bad);font-weight:800}
+.evl{display:flex;flex-direction:column;gap:5px;margin:8px 0}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.pcol{border-top:6px solid var(--mc);padding:16px}
+.ph{display:flex;gap:10px;align-items:center}
+.ph b{display:block;font-size:16px}
+.ph .av{width:38px;height:38px;border-radius:50%;background:color-mix(in srgb,var(--mc) 22%,var(--card));display:flex;align-items:center;justify-content:center;font-size:19px;flex:none}
+.ph .star{margin-left:auto;font-weight:800;font-size:13px;background:color-mix(in srgb,var(--gold) 25%,var(--card));border-radius:999px;padding:3px 9px;white-space:nowrap}
+.list.mini .li{padding:6px 2px;gap:8px;border-radius:8px}
+.list.mini .t{font-weight:600;font-size:14px}
+.list.mini .mid{display:block}
+.li.mc.dn .t{text-decoration:line-through;color:var(--muted)}
+button.tick{cursor:pointer;background:var(--card);padding:0}
+.stars{font-weight:800;white-space:nowrap;color:var(--gold-ink)}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.wday{padding:10px;border-radius:18px;display:flex;flex-direction:column;min-height:220px}
+.wday.today{border:2px solid var(--accent)}
+.wday .wd{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.08em;display:flex;justify-content:space-between;align-items:center}
+.wday .wd b{font-size:16px;color:var(--ink)}
+.wday .add{width:28px;height:28px;font-size:18px;font-weight:700;color:var(--accent-ink)}
+.wday .meal{margin-top:auto;font-size:12.5px;border-top:1.5px dashed var(--line);padding-top:6px;cursor:pointer;overflow-wrap:anywhere}
+.wday .meal.none{color:var(--muted)}
+.wlist{list-style:none;margin:4px 0 6px;padding:0;display:flex;flex-direction:column;gap:4px}
+.wlist li{font-size:12px;line-height:1.3;padding:3px 6px;border-radius:6px;background:var(--soft);overflow-wrap:anywhere}
+.wlist li.dn{text-decoration:line-through;color:var(--muted)}
+.mpick{display:flex;flex-wrap:wrap;gap:6px}
+.mpick label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;font-weight:700;font-size:14px}
+.mpick input{position:absolute;opacity:0;pointer-events:none}
+.mpick label:has(input:checked){border-color:var(--mc);background:color-mix(in srgb,var(--mc) 18%,var(--card))}
+.mpick label:has(input:focus-visible){outline:2px solid var(--accent)}
+.cpick{display:flex;flex-wrap:wrap;gap:8px}
+.cpick label{cursor:pointer;border-radius:50%;padding:3px;border:2px solid transparent}
+.cpick label span{display:block;width:28px;height:28px;border-radius:50%}
+.cpick input{position:absolute;opacity:0;pointer-events:none}
+.cpick label:has(input:checked){border-color:var(--ink)}
+.cpick label:has(input:focus-visible){outline:2px solid var(--accent)}
+.pickgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pick{border-color:var(--mc) !important;white-space:normal;text-align:left}
+.scard{border-top:6px solid var(--mc)}
+.cds{display:flex;flex-direction:column;gap:8px}
+.cdt{display:flex;gap:10px;align-items:center;background:var(--soft);border-radius:14px;padding:9px 12px}
+.cdt[data-act]{cursor:pointer}
+.cdt b{display:block;font-size:14.5px;overflow-wrap:anywhere}
+.cdt .ce{font-size:22px}
+.cdt .cdn{margin-left:auto;font-weight:800;font-size:13px;white-space:nowrap;color:var(--ink);background:var(--card);border-radius:999px;padding:3px 10px}
+.cdt.past{opacity:.6}
+.notes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.notes.small{grid-template-columns:minmax(0,1fr)}
+.sticky{background:color-mix(in srgb,var(--gold) 20%,var(--card));border-radius:14px;padding:12px 12px 6px;border-left:5px solid var(--mc);display:flex;flex-direction:column}
+.sticky p{margin:0 0 6px;overflow-wrap:anywhere;font-weight:600}
+.sticky .row{gap:6px;margin-top:auto}
+.sticky .sp{flex:1}
+.sticky.pin{box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 70%,var(--card))}
+.note label{flex:1;overflow-wrap:anywhere;cursor:pointer}
+.note.done label{text-decoration:line-through;color:var(--muted)}
+.note input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex:none}
+.meals{display:flex;flex-direction:column;gap:6px}
+.mrow2{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center;padding:2px 4px;border-radius:12px}
+.mrow2.today{background:color-mix(in srgb,var(--accent) 10%,var(--card))}
+.mrow2 label{font-size:14px}
+.info dt{cursor:pointer;font-weight:700;color:var(--ink)}
+.kv.info dd{font-weight:500;text-align:left;overflow-wrap:anywhere}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;text-align:right;font-weight:700}
+.kv.info{grid-template-columns:minmax(110px,auto) minmax(0,1fr)}
+.print-only{display:none}
+.fridge .fh{display:flex;justify-content:space-between;font-size:18px;margin-bottom:8px}
+.ft{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed;margin-bottom:10px}
+.ft th,.ft td{border:1px solid #999;padding:4px;vertical-align:top;text-align:left;overflow-wrap:anywhere}
+.ft thead th{background:#eee}
+.ft tbody th{width:90px;background:#f6f6f6}
+.ft .fe{margin-bottom:3px}
+.ft td.cb{text-align:center;font-size:14px}
+@media (max-width:1100px){.week{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:600px){.week{grid-template-columns:minmax(0,1fr)}.wday{min-height:0}.mrow2{grid-template-columns:minmax(0,1fr)}.pgrid{grid-template-columns:minmax(0,1fr)}}
+@media print{.print-only{display:block}.view:has(.print-only)>*:not(.print-only):not(.head){display:none !important}.head .lead{display:none}@page{size:landscape;margin:10mm}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Skip to content</a>
+<div class="app" id="app" hidden>
+  <nav class="side" id="side" aria-label="Main"></nav>
+  <main class="main" id="main">
+    <div class="topbar noprint" id="topbar"></div>
+    <div id="sampleBanner"></div>
+    <div class="view" id="view" tabindex="-1"></div>
+    <footer class="foot" id="footer"></footer>
+  </main>
+</div>
+<button class="fab noprint" id="fab" type="button" aria-label="Add an event" hidden>+</button>
+<div class="layer" id="modal" hidden></div>
+<div class="layer" id="confirm" hidden></div>
+<div id="toast"></div>
+<div id="tip" aria-hidden="true"></div>
+<noscript><p style="padding:20px">Busy Nest needs JavaScript turned on in your browser.</p></noscript>
+<script>
+/* DEMO: block browser storage so the app runs in memory mode (nothing is saved) */
+(function(){var deny=function(){throw new Error('demo: storage off');};
+try{Object.defineProperty(window,'localStorage',{get:deny,configurable:true});}catch(e){}
+try{Object.defineProperty(window,'sessionStorage',{get:deny,configurable:true});}catch(e){}})();
+</script>
+<script>
+"use strict";
+/* ==========================================================================
+   Busy Nest — the whole family's week, on one calm page.
+   Single offline HTML file. No network access of any kind.
+   ========================================================================== */
+const APP = 'Busy Nest', APP_VERSION = '1.0', LS_KEY = 'busynest.v1', SCHEMA = 1, STORE_MAX = 4.5e6;
+let S = null;
+let lastRaw = null, lastLen = 0, saveOk = true, saveMsg = '', storageMode = 'local';
+const UI = { view: 'today', week: null, who: '', recovery: null, rawExported: false, lastAnim: '', choreWho: '', agenda: 14 };
+
+/* ---------- safe templating: every interpolated value is escaped unless it is a Raw ---------- */
+class Raw { constructor(s) { this.s = s; } toString() { return this.s; } }
+const raw = s => new Raw(String(s));
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]); }
+function rv(v) { if (v === null || v === undefined || v === false) return ''; if (v instanceof Raw) return v.s; if (Array.isArray(v)) return v.map(rv).join(''); return esc(v); }
+function html(strings, ...vals) { let o = strings[0]; for (let i = 0; i < vals.length; i++) o += rv(vals[i]) + strings[i + 1]; return new Raw(o); }
+function setHTML(el, r) { if (!(r instanceof Raw)) throw new Error('setHTML needs Raw'); el.innerHTML = r.s; }
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+const clone = o => JSON.parse(JSON.stringify(o));
+const sum = (a, fn) => a.reduce((s, x) => s + (fn ? fn(x) : x), 0);
+
+const ID_RE = /^[A-Za-z0-9_-]{1,40}$/;
+function uid(p) { const b = new Uint8Array(8); crypto.getRandomValues(b); return (p || 'i') + Array.from(b, x => x.toString(36).padStart(2, '0')).join('').slice(0, 14); }
+
+/* ---------- dates: local-time strings ---------- */
+const pad = n => String(n).padStart(2, '0');
+function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function today() { return iso(new Date()); }
+function nowMin() { const d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+function parseD(s) { return new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)); }
+function addDays(s, n) { const d = parseD(s); d.setDate(d.getDate() + n); return iso(d); }
+function dayDiff(a, b) { return Math.round((parseD(b) - parseD(a)) / 864e5); }
+function daysIn(y, m) { return new Date(y, m, 0).getDate(); }
+function isDate(s) { if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false; const y = +s.slice(0, 4), m = +s.slice(5, 7), d = +s.slice(8, 10); if (y < 1900 || y > 2200) return false; const t = new Date(y, m - 1, d); return t.getFullYear() === y && t.getMonth() === m - 1 && t.getDate() === d; }
+function weekday(s) { return parseD(s).getDay(); }
+function weekStartOf(s) { const ws = S ? S.settings.weekStart : 0; return addDays(s, -((weekday(s) - ws + 7) % 7)); }
+const LOC = () => 'en-US-u-ca-gregory-nu-latn';
+function dfmt(s, o) { try { return new Intl.DateTimeFormat(LOC(), o).format(parseD(s)); } catch (e) { return s; } }
+const dLong = s => dfmt(s, { weekday: 'short', month: 'short', day: 'numeric' });
+const dShort = s => dfmt(s, { month: 'short', day: 'numeric' });
+const dFull = s => dfmt(s, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+const wdShort = i => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][i];
+const wdLong = i => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][i];
+function plural(n, a, b) { return n + ' ' + (n === 1 ? a : (b || a + 's')); }
+function relDay(s) { const d = dayDiff(today(), s); if (d === 0) return 'today'; if (d === 1) return 'tomorrow'; if (d === -1) return 'yesterday'; if (d > 1 && d < 7) return wdLong(weekday(s)); return dLong(s); }
+function ordinal(n) { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); }
+
+/* ---------- times: "HH:MM" strings, 24-hour stored ---------- */
+const isTime = s => typeof s === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(s);
+const tmin = s => +s.slice(0, 2) * 60 + +s.slice(3, 5);
+function fmtTime(s) {
+  if (!isTime(s)) return '';
+  if (S && S.settings.clock === '24') return s;
+  const h = +s.slice(0, 2), m = s.slice(3, 5); const h12 = h % 12 === 0 ? 12 : h % 12;
+  return h12 + (m === '00' ? '' : ':' + m) + (h < 12 ? ' AM' : ' PM');
+}
+function timeRange(e) { if (!e.start) return 'All day'; return fmtTime(e.start) + (e.end ? '–' + fmtTime(e.end) : ''); }
+
+/* ==========================================================================
+   Data model, sanitizer, storage, commit/undo, multi-tab sync
+   ========================================================================== */
+const REPEAT = { once: 'One time', weekly: 'Weekly', biweekly: 'Every 2 weeks', monthly: 'Monthly', yearly: 'Yearly' };
+const CFREQ = { daily: 'Every day', days: 'Every few days', weekly: 'Weekly', monthly: 'Monthly', once: 'One time' };
+const LIMITS = { members: 10, events: 800, chores: 400, log: 40000, rewards: 100, redeems: 5000, shop: 400, notes: 200, info: 60, countdowns: 60 };
+const MEMBER_COLORS = [['#E07A5F', 'Coral'], ['#3D85C6', 'Blue'], ['#6AA84F', 'Green'], ['#9B6BC9', 'Purple'], ['#E6A23C', 'Amber'], ['#D9598C', 'Pink'], ['#2BA3A3', 'Teal'], ['#8D6E63', 'Brown'], ['#5C6BC0', 'Indigo'], ['#C0A030', 'Mustard'], ['#E06666', 'Red'], ['#7A9A3A', 'Olive']];
+const SHOP_CATS = [['produce', '🥦 Produce'], ['dairy', '🥛 Dairy & eggs'], ['meat', '🍗 Meat & fish'], ['bakery', '🍞 Bakery'], ['pantry', '🥫 Pantry'], ['frozen', '🧊 Frozen'], ['household', '🧻 Household'], ['other', '📦 Other']];
+const DEFAULT_REWARDS = [['🎬', 'Pick the family movie', 10], ['📱', 'Extra 30 minutes of screen time', 15], ['🌙', 'Stay up 30 minutes later', 20], ['🍦', 'Trip for ice cream', 40]];
+
+function defaultSettings() { return { family: '', weekStart: 0, clock: '12', theme: 'auto', palette: 'sunny', custom: { base: 'sunny', accent: '#A45F00', accent2: '#2F7FA6', gold: '#E8B830' }, lastBackup: '', setupHidden: false }; }
+function defaultRewards() { return DEFAULT_REWARDS.map(([e, n, c], i) => ({ id: 'rw' + i, emoji: e, name: n, cost: c })); }
+function blankData(keep) {
+  const d = { schema: SCHEMA, settings: defaultSettings(), members: [], events: [], chores: [], log: [], rewards: defaultRewards(), redeems: [], meals: {}, shop: [], notes: [], info: [], countdowns: [], isSample: false, sampleEdited: false };
+  if (keep) for (const k of ['weekStart', 'clock', 'theme', 'palette', 'custom', 'lastBackup']) if (keep[k] !== undefined) d.settings[k] = clone(keep[k]);
+  return d;
+}
+
+/* ---------- sanitizer: whitelist + coerce + REPORT every change ---------- */
+function sanitize(input) {
+  const fixes = []; const fx = m => fixes.push(m);
+  const isObj = o => o !== null && typeof o === 'object' && !Array.isArray(o);
+  if (!isObj(input)) return { data: null, fixes: ['The data is not a Busy Nest data object.'] };
+  const str = (v, max, label, def) => { if (v === undefined || v === null) return def === undefined ? '' : def; if (typeof v !== 'string') { fx(label + ' was not text'); v = String(v); } if (v.length > max) { fx(label + ' was too long and was shortened'); v = v.slice(0, max); } return v; };
+  const bool = (v, label) => { if (v === undefined || v === null) return false; if (typeof v !== 'boolean') { fx(label + ' was not yes/no'); return !!v; } return v; };
+  const int = (v, lo, hi, def, label) => { if (v === undefined || v === null) return def; const n = Number(v); if (!Number.isInteger(n) || n < lo || n > hi) { fx(label + ' was not a whole number from ' + lo + ' to ' + hi + ' (fixed)'); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : def; } return n; };
+  const arr = (v, label, cap) => { if (v === undefined) { fx(label + ' list was missing (started empty)'); return []; } if (!Array.isArray(v)) { fx(label + ' list was not a list (started empty)'); return []; } const items = v.filter(x => { if (!isObj(x)) { fx(label + ': a broken item was removed'); return false; } return true; }); if (cap && items.length > cap) { fx(label + ': kept the first ' + cap); return items.slice(0, cap); } return items; };
+  const ids = (list, label) => { const map = new Map(), seen = new Set(); for (const x of list) { let id = x.id; if (typeof id !== 'string' || !ID_RE.test(id) || seen.has(id)) { const n = uid(label[0]); fx(label + ': ' + (seen.has(id) ? 'a repeated ID' : 'an invalid ID') + ' was replaced'); if (typeof id === 'string' && !map.has(id)) map.set(id, n); id = n; } else map.set(id, id); seen.add(id); x.__id = id; } return map; };
+  const at = (v, label) => { if (v === undefined || v === null) return 0; const n = Number(v); if (!Number.isFinite(n) || n < 0) { fx(label + ' time was not valid'); return 0; } return Math.floor(n); };
+  const weekdays = (v, label, fallback) => { const ds = Array.isArray(v) ? [...new Set(v.filter(x => Number.isInteger(x) && x >= 0 && x <= 6))].sort() : []; if (!Array.isArray(v) || ds.length !== v.length || !ds.length) { fx(label + ' had invalid days (fixed)'); return ds.length ? ds : [fallback]; } return ds; };
+  const d = blankData(); const o = d.settings;
+  const st = isObj(input.settings) ? input.settings : (input.settings !== undefined ? (fx('Settings were not readable (defaults used)'), {}) : {});
+  o.family = str(st.family, 40, 'Family name');
+  if (st.weekStart !== undefined) { if (st.weekStart === 0 || st.weekStart === 1) o.weekStart = st.weekStart; else fx('Week start was not Sunday or Monday'); }
+  if (st.clock !== undefined) { if (st.clock === '12' || st.clock === '24') o.clock = st.clock; else fx('Clock setting was not 12 or 24 hours'); }
+  if (st.theme !== undefined) { if (['auto', 'light', 'dark'].includes(st.theme)) o.theme = st.theme; else fx('Light/dark setting was not recognised'); }
+  if (st.palette !== undefined) { if (st.palette === 'custom' || THEMES[st.palette]) o.palette = st.palette; else fx('Color theme was not recognised (Sunny Day used)'); }
+  if (st.custom !== undefined) { if (isObj(st.custom)) { const c = st.custom; if (c.base !== undefined) { if (THEMES[c.base]) o.custom.base = c.base; else fx('Custom color base theme was not recognised'); } for (const k of ['accent', 'accent2', 'gold']) if (c[k] !== undefined) { if (typeof c[k] === 'string' && /^#[0-9a-fA-F]{6}$/.test(c[k])) o.custom[k] = c[k]; else fx('A custom color was not a valid #RRGGBB value'); } } else fx('Custom colors were not readable'); }
+  if (st.lastBackup !== undefined && st.lastBackup !== '') { if (isDate(st.lastBackup)) o.lastBackup = st.lastBackup; else fx('Last backup date was not a real date'); }
+  o.setupHidden = bool(st.setupHidden, 'Setup hidden');
+  // members
+  const mIn = input.members === undefined ? [] : arr(input.members, 'Family members', LIMITS.members); const mmap = ids(mIn, 'member');
+  d.members = mIn.map(m => ({ id: m.__id, name: str(m.name, 30, 'Member name') || (fx('A family member had no name'), 'Someone'), emoji: str(m.emoji, 8, 'Member emoji'), color: int(m.color, 0, 11, 0, 'Member color'), kid: bool(m.kid, 'Kid flag'), birthday: m.birthday === undefined || m.birthday === '' ? '' : (isDate(m.birthday) ? m.birthday : (fx('A birthday was not a real date (cleared)'), '')) }));
+  const mref = (v, label) => { if (v === undefined || v === null || v === '') return ''; if (typeof v === 'string' && mmap.has(v)) return mmap.get(v); fx(label + ' pointed to a missing family member (now “Anyone”)'); return ''; };
+  // events
+  const eIn = arr(input.events, 'Calendar events', LIMITS.events); ids(eIn, 'event');
+  d.events = eIn.map(e => {
+    const x = { id: e.__id, title: str(e.title, 60, 'Event title') || (fx('An event had no title'), 'Event'), emoji: str(e.emoji, 8, 'Event emoji'), who: [], start: '', end: '', place: str(e.place, 60, 'Event place'), repeat: REPEAT[e.repeat] ? e.repeat : (fx('An event repeat type was not recognised (one time used)'), 'once'), date: '', days: [], until: '', skips: [], note: str(e.note, 200, 'Event note') };
+    if (e.who !== undefined) { if (Array.isArray(e.who)) { const set = new Set(); for (const w of e.who) { if (typeof w === 'string' && mmap.has(w)) set.add(mmap.get(w)); else fx('An event pointed to a missing family member (removed from it)'); } x.who = [...set]; } else fx('An event’s “who” was not a list'); }
+    x.date = isDate(e.date) ? e.date : (fx('An event had an impossible or missing date (today used)'), today());
+    if (e.start !== undefined && e.start !== '') { if (isTime(e.start)) x.start = e.start; else fx('An event start time was not valid (now all day)'); }
+    if (e.end !== undefined && e.end !== '') { if (isTime(e.end) && x.start && tmin(e.end) > tmin(x.start)) x.end = e.end; else fx('An event end time was not after its start (removed)'); }
+    if (x.repeat === 'weekly' || x.repeat === 'biweekly') x.days = weekdays(e.days, 'A weekly event', weekday(x.date));
+    if (x.repeat !== 'once' && e.until !== undefined && e.until !== '') { if (isDate(e.until) && e.until >= x.date) x.until = e.until; else fx('An event “until” date was not valid (removed)'); }
+    if (e.skips !== undefined) { if (Array.isArray(e.skips)) { const set = new Set(); for (const s of e.skips) { if (isDate(s)) set.add(s); else fx('A skipped day of an event was not a real date (removed)'); } x.skips = [...set].sort().slice(-500); } else fx('An event’s skipped days were not a list'); }
+    return x;
+  });
+  // chores
+  const cIn = arr(input.chores, 'Chores', LIMITS.chores); const cmap = ids(cIn, 'chore');
+  d.chores = cIn.map(t => {
+    const freq = CFREQ[t.freq] ? t.freq : (fx('A chore repeat type was not recognised (weekly used)'), 'weekly');
+    const x = { id: t.__id, name: str(t.name, 60, 'Chore name') || (fx('A chore had no name'), 'Chore'), emoji: str(t.emoji, 8, 'Chore emoji'), who: mref(t.who, 'A chore'), stars: int(t.stars, 0, 20, 1, 'Chore stars'), freq, every: 2, days: [], monthDay: 1, date: '', start: '', archived: bool(t.archived, 'Chore paused'), note: str(t.note, 140, 'Chore note') };
+    x.start = isDate(t.start) ? t.start : (t.start !== undefined && fx('A chore start date was not a real date (today used)'), today());
+    if (freq === 'days') x.every = int(t.every, 2, 365, 3, 'Chore “every N days”');
+    if (freq === 'weekly') x.days = weekdays(t.days, 'A weekly chore', weekday(x.start));
+    if (freq === 'monthly') x.monthDay = int(t.monthDay, 1, 31, 1, 'Chore day of month');
+    if (freq === 'once') { if (isDate(t.date)) x.date = t.date; else { fx('A one-time chore had no real date (start date used)'); x.date = x.start; } }
+    return x;
+  });
+  // chore log
+  const lIn = arr(input.log, 'Chore history', LIMITS.log); ids(lIn, 'log'); const seenDay = new Set();
+  for (const l of lIn) {
+    if (typeof l.choreId !== 'string' || !cmap.has(l.choreId)) { fx('A done record pointed to a missing chore (removed)'); continue; }
+    if (!isDate(l.date)) { fx('A done record had an impossible date (removed)'); continue; }
+    const choreId = cmap.get(l.choreId); const k = choreId + '|' + l.date; if (seenDay.has(k)) { fx('A chore was marked done twice on the same day (kept one)'); continue; } seenDay.add(k);
+    d.log.push({ id: l.__id, choreId, date: l.date, at: at(l.at, 'A done record'), by: mref(l.by, 'A done record'), stars: int(l.stars, 0, 20, 0, 'Stars earned') });
+  }
+  // rewards & redeems
+  if (input.rewards !== undefined) { const rIn = arr(input.rewards, 'Rewards', LIMITS.rewards); ids(rIn, 'reward'); d.rewards = rIn.map(r => ({ id: r.__id, emoji: str(r.emoji, 8, 'Reward emoji'), name: str(r.name, 50, 'Reward name') || (fx('A reward had no name'), 'Reward'), cost: int(r.cost, 1, 9999, 10, 'Reward cost') })); }
+  if (input.redeems !== undefined) { const xIn = arr(input.redeems, 'Rewards used', LIMITS.redeems); ids(xIn, 'xr'); d.redeems = []; for (const r of xIn) { if (typeof r.memberId !== 'string' || !mmap.has(r.memberId)) { fx('A used reward pointed to a missing family member (removed)'); continue; } if (!isDate(r.date)) { fx('A used reward had an impossible date (removed)'); continue; } d.redeems.push({ id: r.__id, memberId: mmap.get(r.memberId), emoji: str(r.emoji, 8, 'Reward emoji'), name: str(r.name, 50, 'Reward name') || 'Reward', cost: int(r.cost, 1, 9999, 1, 'Reward cost'), date: r.date, at: at(r.at, 'A used reward') }); } }
+  // meals
+  if (input.meals !== undefined) { if (isObj(input.meals)) { let n = 0; for (const [k, v] of Object.entries(input.meals)) { if (!isDate(k)) { fx('A dinner had an impossible date (removed)'); continue; } if (++n > 1500) { fx('Too many dinners (kept 1500)'); break; } const t = str(v, 80, 'A dinner'); if (t) d.meals[k] = t; } } else fx('Dinner plan was not readable'); }
+  // shopping
+  if (input.shop !== undefined) { const sIn = arr(input.shop, 'Shopping list', LIMITS.shop); ids(sIn, 'shop'); d.shop = sIn.map(s => ({ id: s.__id, text: str(s.text, 80, 'A shopping item') || 'Item', cat: SHOP_CATS.some(c => c[0] === s.cat) ? s.cat : (s.cat !== undefined && fx('A shopping category was not recognised (Other used)'), 'other'), done: bool(s.done, 'Shopping item done'), at: at(s.at, 'A shopping item') })); }
+  // notes, info, countdowns
+  if (input.notes !== undefined) { const nIn = arr(input.notes, 'Notes', LIMITS.notes); ids(nIn, 'note'); d.notes = nIn.map(n => ({ id: n.__id, text: str(n.text, 300, 'A note') || 'Note', pinned: bool(n.pinned, 'Note pinned'), by: mref(n.by, 'A note'), at: at(n.at, 'A note') })); }
+  if (input.info !== undefined) { const iIn = arr(input.info, 'Important info', LIMITS.info); ids(iIn, 'info'); d.info = iIn.map(n => ({ id: n.__id, label: str(n.label, 40, 'An info label') || 'Info', value: str(n.value, 200, 'An info value') })); }
+  if (input.countdowns !== undefined) { const kIn = arr(input.countdowns, 'Countdowns', LIMITS.countdowns); ids(kIn, 'cd'); d.countdowns = []; for (const c of kIn) { if (!isDate(c.date)) { fx('A countdown had an impossible date (removed)'); continue; } d.countdowns.push({ id: c.__id, name: str(c.name, 40, 'Countdown name') || 'Something fun', emoji: str(c.emoji, 8, 'Countdown emoji'), date: c.date, yearly: bool(c.yearly, 'Countdown yearly') }); } }
+  d.isSample = bool(input.isSample, 'Sample flag'); d.sampleEdited = bool(input.sampleEdited, 'Sample edited flag');
+  if (input.schema !== undefined && input.schema !== SCHEMA) fx('Data format version ' + String(input.schema).slice(0, 8) + ' (this copy reads version ' + SCHEMA + ')');
+  return { data: d, fixes };
+}
+function countDupIds(input) { const dups = []; for (const k of ['members', 'events', 'chores', 'log', 'rewards', 'redeems', 'shop', 'notes', 'info', 'countdowns']) { const list = input[k]; if (!Array.isArray(list)) continue; const seen = new Set(); for (const x of list) if (x && typeof x === 'object' && x.id !== undefined) { if (seen.has(x.id)) { dups.push(k); break; } seen.add(x.id); } } return dups; }
+
+/* ---------- storage ---------- */
+function readRaw() { try { return { ok: true, raw: localStorage.getItem(LS_KEY) }; } catch (e) { return { ok: false, err: e }; } }
+function writeRaw(s) { try { localStorage.setItem(LS_KEY, s); return { ok: true }; } catch (e) { return { ok: false, err: e }; } }
+function errName(e) { return e && (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014) ? 'Browser storage is full.' : 'The browser refused to save' + (e && e.name ? ' (' + e.name + ')' : '') + '.'; }
+function save() {
+  if (storageMode !== 'local') { saveOk = false; saveMsg = 'This browser blocks storage for this file.'; updSave(); return false; }
+  const j = JSON.stringify(S);
+  if (j.length > STORE_MAX) { saveOk = false; saveMsg = 'Your data is too large for browser storage.'; updSave(); return false; }
+  const w = writeRaw(j); if (w.ok) { lastRaw = j; lastLen = j.length; saveOk = true; saveMsg = ''; } else { saveOk = false; saveMsg = errName(w.err); }
+  updSave(); return w.ok;
+}
+/** The one way to change data: edit a draft; S changes only if the save succeeds. */
+function commit(fn, opts) {
+  opts = opts || {};
+  if (UI.recovery) { toast('Changes are paused until the saved data is repaired.'); return false; }
+  if (storageMode === 'local' && !syncIfChanged(true)) return false;
+  const draft = clone(S); const r = fn(draft);
+  if (r === false) return false; if (typeof r === 'string') { toast(r); return false; }
+  if (opts.edit !== false && draft.isSample) draft.sampleEdited = true;
+  const chk = sanitize(clone(draft)); if (chk.fixes.length) { console.error('Internal check failed', chk.fixes); toast('That change could not be saved safely (' + chk.fixes[0] + '). Nothing was changed.'); return false; }
+  const prev = S; S = draft;
+  if (!save()) { if (storageMode === 'local') { S = prev; render(); toast('Not saved: ' + saveMsg + ' Nothing was changed. Please save a backup.', null, 9000); return false; } }
+  render();
+  if (opts.toast) toast(opts.toast, opts.undo ? () => restoreSnapshot(prev, opts.undoMsg) : null);
+  return true;
+}
+function undoable(label, fn, opts) { return commit(fn, Object.assign({ toast: label, undo: true }, opts || {})); }
+function restoreSnapshot(snap, msg) { if (storageMode === 'local' && !syncIfChanged(true)) return; const prev = S; S = clone(snap); if (!save() && storageMode === 'local') { S = prev; render(); toast('Undo could not be saved: ' + saveMsg); return; } render(); toast(msg || 'Undone'); }
+function syncIfChanged(beforeWrite) {
+  const r = readRaw(); if (!r.ok || r.raw === lastRaw) return true;
+  if (r.raw === null) { if (beforeWrite) { toast('Your data was erased in another tab. Reload this page before making changes.'); return false; } return true; }
+  let parsed; try { parsed = JSON.parse(r.raw); } catch (e) { toast('Another tab saved data that cannot be read. Reload this page.'); return false; }
+  const s = sanitize(parsed); if (!s.data || s.fixes.length) { toast('Another tab saved data that needs repair. Reload this page.'); return false; }
+  S = s.data; lastRaw = r.raw; lastLen = r.raw.length; render();
+  toast(beforeWrite ? 'Your other tab changed things, so we loaded the latest. Please try that again.' : 'Updated with changes from your other tab');
+  return false;
+}
+window.addEventListener('storage', e => { if (e.key === LS_KEY && !UI.recovery && storageMode === 'local') syncIfChanged(false); });
+
+/* ==========================================================================
+   Calendar engine, conflicts, chore scheduling, stars, countdowns
+   ========================================================================== */
+const byId = (list, id) => list.find(x => x.id === id);
+const memberOf = id => S.members.find(m => m.id === id) || null;
+const mColor = m => m ? MEMBER_COLORS[m.color % 12][0] : '#9AA19D';
+const mLabel = m => m ? (m.emoji ? m.emoji + ' ' : '') + m.name : 'Anyone';
+
+/* ---------- events: does event e happen on date d? ---------- */
+function sunOf(s) { return addDays(s, -weekday(s)); }
+function occursOn(e, d) {
+  if (d < e.date) return false;
+  if (e.until && d > e.until) return false;
+  if (e.skips.length && e.skips.includes(d)) return false;
+  const y = +d.slice(0, 4), m = +d.slice(5, 7), day = +d.slice(8, 10);
+  switch (e.repeat) {
+    case 'once': return d === e.date;
+    case 'weekly': return e.days.includes(weekday(d));
+    case 'biweekly': return e.days.includes(weekday(d)) && (dayDiff(sunOf(e.date), sunOf(d)) / 7) % 2 === 0;
+    case 'monthly': return day === Math.min(+e.date.slice(8, 10), daysIn(y, m));
+    case 'yearly': return m === +e.date.slice(5, 7) && day === Math.min(+e.date.slice(8, 10), daysIn(y, m));
+  }
+  return false;
+}
+function eventSort(a, b) { return (a.start ? 1 : 0) - (b.start ? 1 : 0) || (a.start < b.start ? -1 : a.start > b.start ? 1 : 0) || a.title.localeCompare(b.title) || (a.id < b.id ? -1 : 1); }
+function eventsOn(d, who) { return S.events.filter(e => occursOn(e, d) && (!who || e.who.length === 0 || e.who.includes(who))).sort(eventSort); }
+function whoOf(e) { return e.who.length ? e.who : (S.members.length ? S.members.map(m => m.id) : ['*']); }
+function whoText(e) { if (!e.who.length) return 'Everyone'; return e.who.map(id => { const m = memberOf(id); return m ? m.name : ''; }).filter(Boolean).join(', '); }
+function endMin(e) { return e.end ? tmin(e.end) : Math.min(24 * 60, tmin(e.start) + 60); }
+/** Timed events on day d that overlap and share at least one person. */
+function conflictsOn(d) {
+  const ev = eventsOn(d).filter(e => e.start); const out = [];
+  for (let i = 0; i < ev.length; i++) for (let j = i + 1; j < ev.length; j++) {
+    const a = ev[i], b = ev[j];
+    if (tmin(a.start) < endMin(b) && tmin(b.start) < endMin(a)) { const wb = whoOf(b); const both = whoOf(a).filter(x => wb.includes(x)); if (both.length) out.push({ a, b, who: both, d }); }
+  }
+  return out;
+}
+function conflictIds(d) { const s = new Set(); for (const c of conflictsOn(d)) { s.add(c.a.id); s.add(c.b.id); } return s; }
+function conflictText(c) { const names = c.who.map(id => id === '*' ? 'Your family' : (memberOf(id) || { name: '' }).name).filter(Boolean); return (names.length > 2 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names.join(' and ')) + ': “' + c.a.title + '” and “' + c.b.title + '” overlap at ' + fmtTime(tmin(c.a.start) >= tmin(c.b.start) ? c.a.start : c.b.start); }
+function repeatText(e) {
+  if (e.repeat === 'once') return 'One time';
+  const ds = e.days.length === 7 ? 'every day' : e.days.map(wdShort).join(', ');
+  let t = e.repeat === 'weekly' ? 'Weekly · ' + ds : e.repeat === 'biweekly' ? 'Every 2 weeks · ' + ds : e.repeat === 'monthly' ? 'Monthly on the ' + ordinal(+e.date.slice(8)) + (+e.date.slice(8) > 28 ? ' (or last day)' : '') : 'Every year on ' + dfmt(e.date, { month: 'long', day: 'numeric' });
+  if (e.until) t += ' · until ' + dShort(e.until);
+  return t;
+}
+/** Every occurrence in [from, from+days) as {e, d}. */
+function agenda(from, days, who) { const out = []; for (let i = 0; i < days; i++) { const d = addDays(from, i); for (const e of eventsOn(d, who)) out.push({ e, d }); } return out; }
+
+/* ---------- chores: at most ONE open occurrence, missed days never pile up ---------- */
+let _ldCache = null, _ldKey = null, _ldLen = -1;
+function lastDone(id) { if (_ldKey !== S.log || _ldLen !== S.log.length) { _ldKey = S.log; _ldLen = S.log.length; _ldCache = new Map(); for (const l of S.log) { const p = _ldCache.get(l.choreId); if (!p || l.date > p) _ldCache.set(l.choreId, l.date); } } return _ldCache.get(id) || null; }
+function doneRec(id, date) { return S.log.find(l => l.choreId === id && l.date === date) || null; }
+function activeChores() { return S.chores.filter(c => !c.archived); }
+function nextOnOrAfter(t, from) {
+  if (t.freq === 'once') return t.date >= from ? t.date : null;
+  if (from < t.start) from = t.start;
+  if (t.freq === 'daily') return from;
+  if (t.freq === 'days') { const k = Math.ceil(dayDiff(t.start, from) / t.every); return addDays(t.start, Math.max(0, k) * t.every); }
+  if (t.freq === 'weekly') { for (let i = 0; i < 7; i++) { const d = addDays(from, i); if (t.days.includes(weekday(d))) return d; } return null; }
+  if (t.freq === 'monthly') { let d = from; for (let i = 0; i < 3; i++) { const y = +d.slice(0, 4), m = +d.slice(5, 7); const cand = y + '-' + pad(m) + '-' + pad(Math.min(t.monthDay, daysIn(y, m))); if (cand >= d) return cand; d = m === 12 ? (y + 1) + '-01-01' : y + '-' + pad(m + 1) + '-01'; } return null; }
+  return null;
+}
+function dueDate(t) {
+  const ld = lastDone(t.id);
+  if (t.freq === 'once') return ld ? null : t.date;
+  if (t.freq === 'days' && ld) return addDays(ld, t.every);
+  return nextOnOrAfter(t, ld ? addDays(ld, 1) : t.start);
+}
+/** done | waiting | today | soon | later | finished, relative to ref (default today) */
+function status(t, ref) {
+  ref = ref || today();
+  if (doneRec(t.id, ref)) return { s: 'done', due: dueDate(t) };
+  const due = dueDate(t); if (!due) return { s: 'finished', due: null };
+  const d = dayDiff(ref, due);
+  if (d < 0) return { s: 'waiting', due, since: -d };
+  if (d === 0) return { s: 'today', due };
+  if (d <= 3) return { s: 'soon', due, inDays: d };
+  return { s: 'later', due, inDays: d };
+}
+function statusLabel(st) { if (st.s === 'done') return 'Done today ✓'; if (st.s === 'waiting') return 'Waiting since ' + relDay(st.due); if (st.s === 'today') return 'Today'; if (st.s === 'finished') return 'Finished'; return 'Next: ' + relDay(st.due); }
+function freqText(t) {
+  if (t.freq === 'daily') return 'Every day';
+  if (t.freq === 'days') return 'Every ' + t.every + ' days';
+  if (t.freq === 'weekly') return t.days.length === 7 ? 'Every day' : 'Weekly · ' + t.days.map(wdShort).join(', ');
+  if (t.freq === 'monthly') return 'Monthly · ' + ordinal(t.monthDay) + (t.monthDay > 28 ? ' (or last day)' : '');
+  return 'One time · ' + dLong(t.date);
+}
+/** Chores to do today (waiting + today) plus those done today, for one person ('' = Anyone chores, null = all). */
+function choresToday(who) {
+  const t = today();
+  return activeChores().filter(c => who === null || who === undefined || c.who === who).map(c => ({ c, st: status(c) })).filter(x => x.st.s === 'waiting' || x.st.s === 'today' || x.st.s === 'done')
+    .sort((a, b) => (a.st.s === 'done') - (b.st.s === 'done') || (a.st.due < b.st.due ? -1 : a.st.due > b.st.due ? 1 : 0) || a.c.name.localeCompare(b.c.name));
+}
+/** Does chore c appear on day d? Past = from history; today/future = from the schedule. */
+function choreOn(c, d) {
+  const t = today();
+  if (d < t) return !!doneRec(c.id, d);
+  if (d === t && doneRec(c.id, d)) return true;
+  const due = dueDate(c); if (!due) return false;
+  const first = due < t ? t : due;
+  if (d === first) return true; if (d < first) return false;
+  if (c.freq === 'once') return false;
+  if (c.freq === 'days') return dayDiff(first, d) % c.every === 0;
+  return nextOnOrAfter(c, d) === d;
+}
+
+/* ---------- stars ---------- */
+function starsEarned(id, from, to) { return sum(S.log.filter(l => l.by === id && (!from || l.date >= from) && (!to || l.date <= to)), l => l.stars); }
+function starsSpent(id) { return sum(S.redeems.filter(r => r.memberId === id), r => r.cost); }
+function starBalance(id) { return starsEarned(id) - starsSpent(id); }
+function weekStars(id, ws) { return starsEarned(id, ws, addDays(ws, 6)); }
+
+/* ---------- countdowns & birthdays ---------- */
+function nextYearly(date, from) { const md = date.slice(5); let y = +from.slice(0, 4); for (let k = 0; k < 2; k++) { const mm = +md.slice(0, 2), dd = +md.slice(3, 5); const cand = (y + k) + '-' + pad(mm) + '-' + pad(Math.min(dd, daysIn(y + k, mm))); if (cand >= from) return cand; } return null; }
+function countdownList(from) {
+  from = from || today(); const out = [];
+  for (const c of S.countdowns) { const d = c.yearly ? nextYearly(c.date, from) : c.date; out.push({ id: c.id, kind: 'cd', name: c.name, emoji: c.emoji || '🎉', date: d, days: dayDiff(from, d) }); }
+  for (const m of S.members) if (m.birthday) { const d = nextYearly(m.birthday, from); const age = +d.slice(0, 4) - +m.birthday.slice(0, 4); out.push({ id: m.id, kind: 'bday', name: m.name + (age > 0 && age < 130 ? ' turns ' + age : '’s birthday'), emoji: '🎂', date: d, days: dayDiff(from, d) }); }
+  return out.sort((a, b) => (a.days < 0) - (b.days < 0) || (a.days >= 0 ? a.days - b.days : b.days - a.days) || a.name.localeCompare(b.name));
+}
+function daysText(n) { if (n === 0) return 'Today!'; if (n === 1) return 'Tomorrow'; if (n < 0) return plural(-n, 'day') + ' ago'; return 'in ' + plural(n, 'day'); }
+
+/* ---------- shopping ---------- */
+const CAT_WORDS = { produce: 'apple banana berries berry lettuce salad tomato onion potato carrot fruit veg vegetable avocado lemon lime grape spinach broccoli pepper cucumber garlic herb', dairy: 'milk cheese yogurt yoghurt butter egg eggs cream', meat: 'chicken beef pork turkey fish salmon shrimp bacon sausage ham meat steak', bakery: 'bread bagel bun buns tortilla tortillas muffin croissant rolls', pantry: 'rice pasta cereal flour sugar oil sauce beans soup coffee tea snack snacks peanut jam honey spice oats crackers', frozen: 'frozen ice pizza peas waffles', household: 'paper towel towels soap detergent trash bags tissue toilet sponge sponges batteries shampoo toothpaste diapers wipes foil' };
+function guessCat(text) { const w = text.toLowerCase().split(/[^a-z]+/).filter(Boolean); for (const [k, list] of Object.entries(CAT_WORDS)) { const set = list.split(' '); if (w.some(x => set.includes(x) || set.includes(x.replace(/s$/, '')))) return k; } return 'other'; }
+
+/* ==========================================================================
+   Themes (§14)
+   ========================================================================== */
+const MONTH_SETS = {
+  rainbow: '#7EA6D8 #E59AB4 #86C29D #EDBE70 #B49CDD #F09C7A #6CC0BD #D6C266 #E58A6B #C9906F #8D9EDB #79B996',
+  warm: '#F0A98E #F3BF85 #E9CF7E #E59B87 #E69AA4 #EDB2BF #E3A27A #F1C59A #DFAE83 #D89A86 #EDB9A2 #E6C08E',
+  cool: '#93BDE6 #9ED3CD #AFBDEB #95CDB9 #ACB0E3 #99C6E3 #93D3DC #B7C2EE #9FCBE6 #A8D7C7 #9BB0E2 #92CADC',
+  berry: '#E79AB5 #C9A3DE #F0A9A0 #D894C0 #B9A8E6 #EFB0C8 #D7A1D6 #F2B2A8 #C6A0D8 #E6A6BF #B7A9E8 #EDA9B6',
+  earth: '#B9C99A #D8B98E #A8C3A6 #E2C38C #C4B3A0 #D6A98C #9FBFAF #CDBE8E #B7A592 #C9A88E #A9BBA0 #D3B796',
+  mono: '#C9CBD1 #D3D0CB #C6CDC9 #D1CCC8 #C8C8D2 #D3CFC6 #C5CCCF #D0CDC9 #CBC8CF #CFCBC4 #C7CCD1 #D2CEC8'
+};
+const CHART_SETS = {
+  bright: '#6C7FB8 #4F7C67 #E58A6B #E1B04B #5B9BC8 #9C7CC4 #D2698A #4FA3A0 #B08954 #7A8A3C #C2573F #8E86B8',
+  warm: '#C8664A #E1A33F #4F7C9E #8C5A7A #6E9A5B #D98B6E #B5873A #5E8C8A #C2577A #7A6AA8 #A3693F #8E8E6A',
+  cool: '#2F6F8F #4FA3A0 #E0876A #7A86C9 #5BA37A #C98AAE #E0AE48 #3E7FB8 #8D6FB0 #6AA5C9 #B9775A #7E9A5C',
+  jewel: '#7563B0 #AE4568 #3D7F77 #DDA54A #5B7FB8 #C9706A #8A5BA8 #4F9A7A #D2698A #6C6F9E #B08954 #9C4A6E',
+  earth: '#2F5D46 #C27C4C #8A9A5B #B5524A #5E7F99 #D2A04A #7A5C45 #4F8A7A #A86E8A #6D7A3C #C98F6E #57708A',
+  muted: '#2B2B2B #B9835A #7D8C95 #A8A08C #5E6B73 #C9A04E #8C7B6E #6E8A7A #9E7A8C #7A7A6E #B07A5E #5B6E8A'
+};
+const THEMES = {};
+[['sage', 'Sage Morning', 'Calm green & coral', '#4F7C67', '#E58A6B', '#E1B04B', '#F4F3EE', '#ECEFE8', '#E2E5DD', 'rainbow', 'bright'],
+['peach', 'Peach Sorbet', 'Warm, soft & cosy', '#B85A3E', '#4F7C9E', '#E2A93F', '#FBF4EF', '#F5E9E1', '#EEDFD5', 'warm', 'warm'],
+['ocean', 'Ocean Breeze', 'Fresh blues & teal', '#2F6F8F', '#E0876A', '#E0AE48', '#F0F4F6', '#E3ECF0', '#D8E3E9', 'cool', 'cool'],
+['lilac', 'Lavender Field', 'Dreamy purple', '#6E5BAA', '#E39A6A', '#D9A64A', '#F5F3FA', '#ECE8F5', '#E1DCEE', 'berry', 'jewel'],
+['berry', 'Berry Jam', 'Rich pink & teal', '#A8405F', '#3D7F77', '#DDA54A', '#FAF2F4', '#F3E5EA', '#EBD8DF', 'berry', 'jewel'],
+['pencil', 'Pencil Sketch', 'Minimal black & white', '#2B2B2B', '#B9835A', '#C9A04E', '#F5F5F3', '#ECECE8', '#E1E1DC', 'mono', 'muted'],
+['matcha', 'Matcha Latte', 'Earthy green & cream', '#55702F', '#C08A5C', '#D6B25A', '#F6F4EC', '#ECEADC', '#E2DFCF', 'earth', 'earth'],
+['navy', 'Midnight Navy', 'Classic & confident', '#2C3E66', '#E2A54B', '#E2A54B', '#F2F3F7', '#E6E9F0', '#DCE0EA', 'cool', 'cool'],
+['terracotta', 'Terracotta Sun', 'Desert warmth', '#A9532F', '#3F6F6A', '#D9A441', '#F8F1EA', '#F0E4D8', '#E8D9CB', 'earth', 'warm'],
+['candy', 'Cotton Candy', 'Playful pink & sky', '#B8487E', '#3E8CC0', '#E6A93E', '#FBF4F8', '#F4E7EF', '#EDDBE6', 'berry', 'jewel'],
+['forest', 'Forest Cabin', 'Deep green & copper', '#2F5D46', '#C27C4C', '#CFA048', '#F1F2EC', '#E5E8DE', '#DADED1', 'earth', 'earth'],
+['sunny', 'Sunny Day', 'Bright & cheerful', '#A45F00', '#2F7FA6', '#E8B830', '#FDF8EC', '#F7EDD3', '#EFE2C2', 'warm', 'bright']
+].forEach(([k, name, vibe, accent, accent2, gold, bg, soft, line, months, charts]) => { THEMES[k] = { key: k, name, vibe, accent, accent2, gold, bg, soft, line, months: MONTH_SETS[months].split(' '), charts: CHART_SETS[charts].split(' ') }; });
+
+/* ---------- color math ---------- */
+function hexRgb(h) { h = h.replace('#', ''); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); }
+function rgbHex(r) { return '#' + r.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('').toUpperCase(); }
+function mix(a, b, wa) { const A = hexRgb(a), B = hexRgb(b); return rgbHex(A.map((v, i) => v * wa + B[i] * (1 - wa))); }
+function lum(h) { return hexRgb(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }).reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0); }
+function contrast(a, b) { const L1 = lum(a), L2 = lum(b); return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05); }
+function onColor(bg) { return contrast(bg, '#FFFFFF') >= contrast(bg, '#1F2A26') ? '#FFFFFF' : '#1F2A26'; }
+/* Dark-mode lift: mix with white starting at `start` color share, stepping 5% until contrast with #111513 ≥ 4.8 */
+function lift(h, start) { let w = start; let c = mix(h, '#FFFFFF', w); while (contrast(c, '#111513') < 4.8 && w > 0.05) { w -= 0.05; c = mix(h, '#FFFFFF', w); } return c; }
+/* Darken accent for text on light card until contrast ≥ 4.5 (used for accent-colored text) */
+/* Dark-mode text on a dark card: mix toward white until contrast with that card ≥ target */
+function liftOn(h, bg, target) { let w = 1; let c = h; while (contrast(c, bg) < target && w > 0.05) { w -= 0.05; c = mix(h, '#FFFFFF', w); } return c; }
+function deepen(h, bg) { let w = 1; let c = h; while (contrast(c, bg) < 4.5 && w > 0.3) { w -= 0.05; c = mix(h, '#1F2A26', w); } return c; }
+
+function currentTheme() {
+  const st = S ? S.settings : defaultSettings();
+  if (st.palette === 'custom') { const b = THEMES[st.custom.base] || THEMES.sage; return Object.assign({}, b, { key: 'custom', name: 'Custom (' + b.name + ')', accent: st.custom.accent, accent2: st.custom.accent2, gold: st.custom.gold }); }
+  return THEMES[st.palette] || THEMES.sage;
+}
+function themeVars(th) {
+  const L = { bg: th.bg, card: '#FFFFFF', soft: th.soft, line: th.line, ink: '#1F2A26', muted: '#5E6A63', accent: th.accent, 'accent-2': th.accent2, gold: th.gold, good: '#3E8A62', bad: '#C4553F', 'focus-bg': '#1F2A26', 'focus-ink': '#F4F3EE' };
+  L['on-accent'] = onColor(th.accent); L['on-accent-2'] = onColor(th.accent2);
+  L['accent-ink'] = deepen(th.accent, '#FFFFFF'); L['accent2-ink'] = deepen(th.accent2, '#FFFFFF'); L['good-ink'] = deepen('#3E8A62', '#FFFFFF'); L['gold-ink'] = deepen(th.gold, '#FFFFFF');
+  const dbg = mix(th.accent, '#111513', 0.06), dcard = mix(th.accent, '#1B201E', 0.05), dsoft = mix(th.accent, '#252B28', 0.06), dline = mix(th.accent, '#2F3632', 0.08);
+  const da = lift(th.accent, 0.7), da2 = lift(th.accent2, 0.8), dgold = mix(th.gold, '#FFFFFF', 0.85);
+  const D = { bg: dbg, card: dcard, soft: dsoft, line: dline, ink: '#EEF1EE', muted: '#A3AEA8', accent: da, 'accent-2': da2, gold: dgold, good: '#74C69A', bad: '#EE8670', 'focus-bg': '#EEF1EE', 'focus-ink': '#161A18', 'on-accent': '#111513', 'on-accent-2': '#111513', 'accent-ink': liftOn(da, dcard, 4.8), 'accent2-ink': liftOn(da2, dcard, 4.8), 'good-ink': liftOn('#74C69A', dcard, 4.8), 'gold-ink': liftOn(dgold, dcard, 4.8) };
+  const mc = th.months, cc = th.charts; const common = {};
+  mc.forEach((c, i) => { common['m' + i] = c; }); cc.forEach((c, i) => { common['c' + i] = c; });
+  return { L: Object.assign({}, L, common), D: Object.assign({}, D, common) };
+}
+function applyLook() {
+  const th = currentTheme(); const v = themeVars(th);
+  const block = o => Object.entries(o).map(([k, val]) => '--' + k + ':' + val + ';').join('');
+  const css = ':root{' + block(v.L) + 'color-scheme:light}' +
+    '@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){' + block(v.D) + 'color-scheme:dark}}' +
+    ':root[data-theme="dark"]{' + block(v.D) + 'color-scheme:dark}';
+  let el = document.getElementById('palStyle'); if (!el) { el = document.createElement('style'); el.id = 'palStyle'; document.head.append(el); }
+  el.textContent = css;
+  const t = S ? S.settings.theme : 'auto';
+  if (t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
+}
+function isDark() { const t = S.settings.theme; return t === 'dark' || (t === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+
+/* ==========================================================================
+   UI infrastructure: icons, toast, tooltip, two modal layers, forms, charts
+   ========================================================================== */
+const ICONS = {
+  today: 'M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+  calendar: 'M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5zM4 9.5h16M8.5 2.5v3M15.5 2.5v3M8 13h2M14 13h2M8 16.5h2',
+  chores: 'M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z',
+  meals: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 1.5-3 4-3 7h3v11M16 3v18',
+  board: 'M5 4h14v12l-5 5H5zM14 21v-5h5M9 9h6M9 12.5h4',
+  settings: 'M4 7h10M18 7h2M4 17h4M12 17h8M16 5v4M10 15v4',
+  guide: 'M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7h6'
+};
+const icon = n => html`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
+const LOGO = html`<svg width="38" height="38" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="12" fill="var(--accent)"/><path d="M9 22c2.5 6 17.5 6 20 0" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="14" cy="17.5" r="3" fill="var(--gold)"/><circle cx="19.5" cy="15.5" r="3" fill="#fff"/><circle cx="25" cy="17.5" r="3" fill="var(--gold)"/></svg>`;
+const helpBtn = k => html`<button class="help noprint" type="button" data-act="help" data-v="${k}" aria-label="What is this?">?</button>`;
+
+/* ---------- toast ---------- */
+let toastTimer = null, toastUndo = null;
+function toast(msg, undoFn, ms) {
+  const el = $('#toast'); toastUndo = undoFn || null;
+  setHTML(el, html`<div class="t" role="status" aria-live="polite"><span>${msg}</span>${undoFn ? html`<button type="button" id="undoBtn">Undo</button>` : ''}</div>`);
+  if (undoFn) $('#undoBtn').onclick = () => { const f = toastUndo; toastUndo = null; el.innerHTML = ''; if (f) f(); };
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.innerHTML = ''; toastUndo = null; }, ms || (undoFn ? 7000 : 2600));
+}
+
+/* ---------- modal layers ---------- */
+const layers = { modal: null, confirm: null };
+function openLayer(which, content, opts) {
+  const el = $('#' + which);
+  const opener = document.activeElement;
+  setHTML(el, content); el.hidden = false;
+  layers[which] = { opener, opts: opts || {} };
+  const sheet = $('.sheet', el); sheet.setAttribute('role', which === 'confirm' ? 'alertdialog' : 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-labelledby', which + 'Title');
+  setTimeout(() => { const f = (opts && opts.focus && $(opts.focus, el)) || $('[autofocus]', el) || $('input:not([type=hidden]):not([disabled]),select,textarea,button:not(.x)', el); if (f) f.focus(); }, 0);
+}
+function closeLayer(which) {
+  const el = $('#' + which); if (el.hidden) return; const L = layers[which];
+  el.hidden = true; el.innerHTML = ''; layers[which] = null;
+  if (L && L.opener && document.contains(L.opener)) L.opener.focus();
+  else if (which === 'confirm' && layers.modal) { const f = $('#modal input,#modal button'); if (f) f.focus(); }
+  else { const h = $('#view h1'); if (h) { h.tabIndex = -1; h.focus(); } }
+}
+function anyOpen() { return !$('#modal').hidden || !$('#confirm').hidden; }
+/** ask({title, msg | html, yes, no, danger, info, fn, wide}) */
+function ask(o) {
+  const body = o.html || html`<p>${o.msg || ''}</p>`;
+  openLayer('confirm', html`<div class="sheet ${o.wide ? 'wide' : ''}"><h2 id="confirmTitle">${o.title}</h2><div class="cbody">${body}</div>
+    <div class="actions">${o.info ? '' : html`<button type="button" class="btn ghost" data-close="confirm">${o.no || 'Cancel'}</button>`}
+    <button type="button" class="btn ${o.danger ? 'danger' : 'primary'}" id="askYes">${o.yes || (o.info ? 'Got it' : 'OK')}</button></div></div>`, { focus: '#askYes' });
+  $('#askYes').onclick = () => { closeLayer('confirm'); if (o.fn) o.fn(); };
+  if (o.after) o.after($('#confirm'));
+}
+function requestClose() {
+  if (!$('#confirm').hidden) { closeLayer('confirm'); return; }
+  const f = $('#modal form');
+  if (f && f._dirty) ask({ title: 'Discard changes?', msg: 'You changed something in this form. Close it without saving?', yes: 'Discard', no: 'Keep editing', danger: true, fn: () => closeLayer('modal') });
+  else closeLayer('modal');
+}
+
+/* ---------- generic form (§10.2) ---------- */
+function fieldHTML(f, val) {
+  const id = 'f_' + f.k; const req = f.req ? html` <span class="muted">(required)</span>` : '';
+  const lab = html`<label for="${id}">${f.l}${req}</label>`;
+  const hint = f.hint ? html`<span class="hint">${f.hint}</span>` : '';
+  const t = f.t || 'text'; let inner;
+  if (t === 'text') inner = html`${lab}<input type="text" id="${id}" name="${f.k}" maxlength="${f.max || 60}" placeholder="${f.ph || ''}" value="${val == null ? '' : val}" autocomplete="off">`;
+  else if (t === 'int') inner = html`${lab}<input type="number" id="${id}" name="${f.k}" min="${f.min}" max="${f.maxv}" value="${val == null ? '' : val}">`;
+  else if (t === 'date') inner = html`${lab}<input type="date" id="${id}" name="${f.k}" value="${val || ''}" min="1900-01-01" max="2200-12-31">`;
+  else if (t === 'select') { const ok = f.opts.some(o => String(o[0]) === String(val)); inner = html`${lab}<select id="${id}" name="${f.k}">${f.req && !ok ? html`<option value="" disabled selected>Choose…</option>` : ''}${f.opts.map(o => html`<option value="${o[0]}" ${String(o[0]) === String(val) ? raw('selected') : ''}>${o[1]}</option>`)}</select>`; }
+  else if (t === 'seg') inner = html`<span class="lbl" id="${id}_l">${f.l}</span><div class="seg" role="radiogroup" aria-labelledby="${id}_l">${f.opts.map((o, i) => html`<label><input type="radio" name="${f.k}" value="${o[0]}" ${String(o[0]) === String(val) ? raw('checked') : ''}>${o[1]}</label>`)}</div>`;
+  else if (t === 'time') inner = html`${lab}<input type="time" id="${id}" name="${f.k}" value="${val || ''}" step="300">`;
+  else if (t === 'members') inner = html`<span class="lbl" id="${id}_l">${f.l}</span><div class="mpick" role="group" aria-labelledby="${id}_l">${S.members.map(m => html`<label style="--mc:${mColor(m)}"><input type="checkbox" name="${f.k}" value="${m.id}" ${(val || []).includes(m.id) ? raw('checked') : ''}><span class="mdot" aria-hidden="true"></span>${mLabel(m)}</label>`)}</div>`;
+  else if (t === 'color') inner = html`<span class="lbl" id="${id}_l">${f.l}</span><div class="cpick" role="radiogroup" aria-labelledby="${id}_l">${MEMBER_COLORS.map((c, i) => html`<label title="${c[1]}"><input type="radio" name="${f.k}" value="${i}" ${String(i) === String(val) ? raw('checked') : ''}><span style="background:${c[0]}"></span><b class="sr">${c[1]}</b></label>`)}</div>`;
+  else if (t === 'emoji') inner = html`${lab}<input type="text" id="${id}" name="${f.k}" maxlength="8" value="${val || ''}" style="max-width:110px;font-size:20px"><div class="emojirow">${(f.emojis || EMOJI_SUGGEST).map(e => html`<button type="button" data-emoji="${e}" data-for="${id}" aria-label="Use ${e}">${e}</button>`)}</div>`;
+  else if (t === 'checks') inner = html`<span class="lbl" id="${id}_l">${f.l}${req}</span><div class="seg" role="group" aria-labelledby="${id}_l">${f.opts.map(o => html`<label><input type="checkbox" name="${f.k}" value="${o[0]}" ${(val || []).map(String).includes(String(o[0])) ? raw('checked') : ''}>${o[1]}</label>`)}</div>`;
+  else if (t === 'check') inner = html`<label class="check"><input type="checkbox" id="${id}" name="${f.k}" ${val ? raw('checked') : ''}> ${f.l}</label>`;
+  else if (t === 'textarea') inner = html`${lab}<textarea id="${id}" name="${f.k}" maxlength="${f.max || 2000}">${val || ''}</textarea>`;
+  else if (t === 'info') inner = html`<div class="hint">${f.html || f.l}</div>`;
+  return html`<div class="field" data-field="${f.k}">${inner}${hint}<span class="ferr" aria-live="polite"></span></div>`;
+}
+function openForm(title, fields, values, onSave, onDelete, opts) {
+  opts = opts || {}; values = values || {};
+  const groups = []; let pair = [];
+  for (const f of fields) { if (f.half) { pair.push(f); if (pair.length === 2) { groups.push(html`<div class="fgrid">${pair.map(p => fieldHTML(p, values[p.k]))}</div>`); pair = []; } } else { if (pair.length) { groups.push(html`<div class="fgrid">${pair.map(p => fieldHTML(p, values[p.k]))}</div>`); pair = []; } groups.push(fieldHTML(f, values[f.k])); } }
+  if (pair.length) groups.push(html`<div class="fgrid">${pair.map(p => fieldHTML(p, values[p.k]))}</div>`);
+  openLayer('modal', html`<div class="sheet ${opts.wide ? 'wide' : ''}"><button type="button" class="x" style="position:absolute;right:14px;top:14px" data-close="modal" aria-label="Close">×</button>
+    <h2 id="modalTitle">${title}</h2>${opts.intro ? html`<p class="muted">${opts.intro}</p>` : ''}
+    <form novalidate>${groups}<div class="actions">${onDelete ? html`<button type="button" class="btn danger" data-fdel="1">${opts.delLabel || 'Delete'}</button>` : ''}<span class="sp"></span>
+    <button type="button" class="btn ghost" data-close="modal">Cancel</button><button type="submit" class="btn primary">${opts.saveLabel || 'Save'}</button></div></form></div>`, { focus: opts.focus });
+  const form = $('#modal form'); form._dirty = false;
+  const apply = () => { const v = readForm(fields, form, true); for (const f of fields) { if (!f.show) continue; const on = !!f.show(v); const w = $('[data-field="' + f.k + '"]', form); w.hidden = !on; $$('input,select,textarea,button', w).forEach(i => { i.disabled = !on; }); } };
+    form.addEventListener('input', e => { form._dirty = true; const fe = e.target.closest('.field'); if (fe) $('.ferr', fe).textContent = ''; apply(); });
+  form.addEventListener('change', () => { form._dirty = true; apply(); });
+  form.addEventListener('click', e => {
+    const a = e.target.closest('[data-add]'); if (a) { const inp = $('#' + a.dataset.for); inp.value = String(Number(a.dataset.add)); form._dirty = true; inp.focus(); return; }
+    const em = e.target.closest('[data-emoji]'); if (em) { const inp = $('#' + em.dataset.for); inp.value = em.dataset.emoji; form._dirty = true; return; }
+    if (e.target.closest('[data-fdel]')) ask({ title: opts.delTitle || 'Delete this?', msg: (typeof opts.delMsg === 'function' ? opts.delMsg() : opts.delMsg) || 'You can undo right after.', yes: opts.delLabel || 'Delete', danger: true, fn: () => { closeLayer('modal'); onDelete(); } });
+  });
+  $$('input[type=date]', form).forEach(i => i.addEventListener('click', () => { try { i.showPicker(); } catch (e) { } }));
+  
+  apply();
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const v = readForm(fields, form, false);
+    if (v.__err) { const w = $('[data-field="' + v.__err.k + '"]', form); $('.ferr', w).textContent = v.__err.msg; const inp = $('input,select,textarea', w); if (inp) { inp.focus(); } w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake'); toast(v.__err.toast || 'Please fill in the highlighted field'); return; }
+    const r = onSave(v);
+    if (r === false) return;
+    if (r !== 'handled') closeLayer('modal');
+  });
+  return form;
+}
+function readForm(fields, form, loose) {
+  const v = {};
+  for (const f of fields) {
+    const w = $('[data-field="' + f.k + '"]', form); if (!w || w.hidden) { v[f.k] = undefined; continue; }
+    const t = f.t || 'text'; let val;
+    if (t === 'checks') { val = $$('input[name="' + f.k + '"]:checked', form).map(c => Number(c.value)); if (!loose && f.req && !val.length) { v.__err = { k: f.k, msg: 'Please choose at least one.' }; return v; } v[f.k] = val; continue; }
+    if (t === 'members') { v[f.k] = $$('input[name="' + f.k + '"]:checked', form).map(c => c.value); continue; }
+    if (t === 'seg' || t === 'color') { const c = $('input[name="' + f.k + '"]:checked', form); val = c ? c.value : ''; if (t === 'color') val = Number(val || 0); }
+    else if (t === 'check') val = $('#f_' + f.k, form).checked;
+    else if (t === 'info') continue;
+    else val = $('#f_' + f.k, form).value;
+    if (t === 'text' || t === 'emoji' || t === 'textarea') val = val.trim();
+    if (t === 'color') { v[f.k] = val; continue; }
+    if (loose) { v[f.k] = val; continue; }
+    if (t === 'int') { const n = Number(val); if (val === '' || !Number.isInteger(n) || (f.min !== undefined && n < f.min) || (f.maxv !== undefined && n > f.maxv)) { v.__err = { k: f.k, msg: 'Please enter a whole number' + (f.min !== undefined ? ' from ' + f.min + ' to ' + f.maxv : '') + '.' }; return v; } val = n; }
+    else if (t === 'time') { if (!val) { if (f.req) { v.__err = { k: f.k, msg: 'Please choose a time.' }; return v; } val = ''; } else if (!isTime(val)) { v.__err = { k: f.k, msg: 'Please choose a real time.' }; return v; } }
+    else if (t === 'date') { if (!val) { if (f.req) { v.__err = { k: f.k, msg: 'Please choose a day.' }; return v; } val = ''; } else if (!isDate(val)) { v.__err = { k: f.k, msg: 'Please choose a real date.' }; return v; } }
+    else if (f.req && (val === '' || val === undefined)) { v.__err = { k: f.k, msg: 'Please fill this in.' }; return v; }
+    v[f.k] = val;
+  }
+  return v;
+}
+
+/* ---------- charts (§13) ---------- */
+function niceMax(v) { if (v <= 0) return 100; const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 4, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+function shortNum(v) { if (v >= 1e6) return (v / 1e6).toFixed(1).replace(/\.0$/, '') + 'm'; if (v >= 1000) return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k'; return String(Math.round(v)); }
+function barChart(labels, series, height, o) {
+  o = o || {}; const W = 640, H = height || 220, padL = 46, padB = 24, padT = 8, n = labels.length;
+  const max = niceMax(Math.max(1, ...series.flatMap(s => s.vals)));
+  const cw = (W - padL) / n, ns = series.length, gap = o.gap != null ? o.gap : 2;
+  const bw = Math.max(2, Math.min(o.bw || 26, (cw * 0.78 - gap * (ns - 1)) / ns));
+  const y = v => padT + (H - padT - padB) * (1 - v / max);
+  const grid = [0, 1, 2, 3, 4].map(i => { const v = max * i / 4; return html`<line class="grid" x1="${padL}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text x="${padL - 6}" y="${y(v) + 4}" text-anchor="end">${shortNum(v)}</text>`; });
+  let bi = 0;
+  const cols = labels.map((lab, i) => {
+    const x0 = padL + i * cw, groupW = bw * ns + gap * (ns - 1), gx = x0 + (cw - groupW) / 2;
+    const act = o.acts && o.acts[i]; const tip = o.tips ? o.tips[i] : lab;
+    const bars = series.map((s, j) => { const v = s.vals[i]; const h = Math.max(0, (H - padT - padB) * v / max); const rx = Math.min(4, bw / 3); const d = Math.min(bi++ * 28, 500); return v > 0 ? html`<rect class="b ${o.hl === i ? 'hl' : ''}" x="${gx + j * (bw + gap)}" y="${y(v)}" width="${bw}" height="${h}" rx="${rx}" fill="${s.color}" style="animation-delay:${d}ms" data-tip="${tip}"/>` : ''; });
+    const showLab = !o.skipLabel || i % o.skipLabel === 0 || o.hl === i;
+    return html`<g class="col" ${act ? html`data-act="${act[0]}" data-v="${act[1]}"` : ''} data-tip="${tip}"><rect class="hit" x="${x0}" y="0" width="${cw}" height="${H}"/>${bars}${showLab ? html`<text x="${x0 + cw / 2}" y="${H - 6}" text-anchor="middle">${lab}</text>` : ''}</g>`;
+  });
+  const legend = series.length > 1 ? html`<div class="legendc">${series.map(s => html`<span><i style="background:${s.color}"></i>${s.name}</span>`)}</div>` : '';
+  return html`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria || 'Bar chart'}">${grid}${cols}</svg>${legend}`;
+}
+function donutBlock(items, centerLabel, centerValue, o) {
+  o = o || {}; const total = sum(items, x => x.val); const R = 72, C = 2 * Math.PI * R; let off = 0; const max = o.max || 8;
+  const segs = total > 0 ? items.map((it, i) => { const len = C * it.val / total; const pc = Math.round(it.val / total * 100); const s = html`<circle class="seg" data-seg="${i}" data-l="${it.label}" data-val="${(o.fmt || String)(it.val)}" data-pct="${pc}" ${o.click ? html`data-act="${o.act || 'catfilter'}" data-v="${it.id}"` : ''} cx="95" cy="95" r="${R}" fill="none" stroke="${it.color}" stroke-width="24" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-off}" transform="rotate(-90 95 95)" data-tip="${it.label + ' · ' + (o.fmt || String)(it.val) + ' · ' + pc + '%'}"/>`; off += len; return s; }) : [];
+  const shown = items.slice(0, max);
+  return html`<div class="donutwrap" data-cl="${centerLabel}" data-cv="${centerValue}">
+    <svg class="donut" viewBox="0 0 190 190" role="img" aria-label="${'Donut chart: ' + centerLabel + ' ' + centerValue}"><circle cx="95" cy="95" r="${R}" fill="none" stroke="var(--soft)" stroke-width="24"/><g class="segs">${segs}</g>
+    <text class="cl" x="95" y="80" text-anchor="middle">${centerLabel}</text><text class="cv" x="95" y="104" text-anchor="middle">${centerValue}</text><text class="cp" x="95" y="122" text-anchor="middle"></text></svg>
+    <div>${total > 0 ? html`<ul class="dleg">${shown.map((it, i) => html`<li tabindex="0" data-seg="${i}" data-l="${it.label}" data-val="${(o.fmt || String)(it.val)}" data-pct="${Math.round(it.val / total * 100)}" ${o.click ? html`data-act="${o.act || 'catfilter'}" data-v="${it.id}"` : ''}><span class="dt" style="background:${it.color}"></span><span class="nm">${it.emoji ? it.emoji + ' ' : ''}${it.label}</span><span class="pc">${Math.round(it.val / total * 100)}%</span><span class="av">${(o.fmt || String)(it.val)}</span></li>`)}</ul>${items.length > max ? html`<p class="tiny muted">+ ${items.length - max} more</p>` : ''}${o.click ? html`<p class="tiny muted">Tip: hover to explore, tap a slice to open it.</p>` : ''}` : html`<p class="empty">${o.empty || 'Nothing yet.'}</p>`}</div></div>`;
+}
+function ring(p, color, label) { const R = 34, C = 2 * Math.PI * R, len = C * Math.max(0, Math.min(1, p)); return html`<svg class="ring" width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="${label || Math.round(p * 100) + '%'}"><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${len} ${C}" transform="rotate(-90 42 42)"/><text x="42" y="48" text-anchor="middle">${Math.round(p * 100)}%</text></svg>`; }
+function bar(p, cls) { return html`<div class="bar ${cls || ''}" role="presentation"><i style="width:${Math.round(Math.max(0, Math.min(1, p)) * 100)}%"></i></div>`; }
+
+/* ==========================================================================
+   Views
+   ========================================================================== */
+const NAV = [['today', 'Today', 'today'], ['calendar', 'Calendar', 'calendar'], ['chores', 'Chores & stars', 'chores'], ['meals', 'Meals & list', 'meals'], ['board', 'Family board', 'board'], ['settings', 'Settings', 'settings'], ['guide', 'Guide', 'guide']];
+const kpi = (k, v, s, cls) => html`<div class="card kpi ${cls || ''}"><div class="k">${k}</div><div class="v">${v}</div>${s ? html`<div class="s">${s}</div>` : ''}</div>`;
+function emptyState(text, btnLabel, act, v) { return html`<div class="empty"><p>${text}</p>${btnLabel ? html`<button class="btn sm primary" type="button" data-act="${act}" ${v ? html`data-v="${v}"` : ''}>${btnLabel}</button>` : ''}</div>`; }
+const mdot = m => html`<span class="mdot" style="background:${mColor(m)}" aria-hidden="true"></span>`;
+function whoDots(e) { if (!e.who.length) return html`<span class="tiny muted">Everyone</span>`; return html`<span class="dots" aria-label="${whoText(e)}">${e.who.map(id => mdot(memberOf(id)))}</span>`; }
+function evColor(e) { return e.who.length === 1 ? mColor(memberOf(e.who[0])) : e.who.length ? 'var(--accent-2)' : 'var(--accent)'; }
+function evChip(e, d, conf) {
+  return html`<button type="button" class="ev ${conf ? 'conf' : ''}" style="--ec:${evColor(e)}" data-act="editev" data-v="${e.id}" data-d="${d}" aria-label="${e.title + ', ' + timeRange(e) + ', ' + whoText(e) + (conf ? ', overlaps another event' : '')}"><span class="et">${e.start ? fmtTime(e.start) : 'All day'}</span><span class="en">${e.emoji ? e.emoji + ' ' : ''}${e.title}</span>${whoDots(e)}${conf ? html`<span class="cf" aria-hidden="true">⚠</span>` : ''}</button>`;
+}
+function choreRow(c, opts) {
+  opts = opts || {}; const st = status(c); const m = memberOf(c.who); const rec = st.s === 'done' ? doneRec(c.id, today()) : null; const by = rec ? memberOf(rec.by) : null;
+  const canDo = st.s !== 'done' && st.s !== 'finished';
+  const stTag = html`<span class="tag ${{ done: 'good', waiting: 'warm', today: 'gold' }[st.s] || ''}">${statusLabel(st)}${by && !c.who ? ' · ' + by.name : ''}</span>`;
+  return html`<li class="li wrapr" data-chore="${c.id}"><div class="tile" style="box-shadow:inset 4px 0 0 ${mColor(m)}" aria-hidden="true">${c.emoji || '✨'}</div>
+  <div class="mid" data-act="editchore" data-v="${c.id}" tabindex="0" role="button" aria-label="${'Edit ' + c.name}"><div class="t">${c.name}</div><div class="k">${opts.noWho ? '' : mLabel(m) + ' · '}${freqText(c)}${c.stars ? ' · ' + plural(c.stars, 'star') : ''}</div></div>
+  ${stTag}<div class="btns row">${canDo ? html`<button class="btn sm primary" type="button" data-act="done" data-v="${c.id}" aria-label="${'Mark done: ' + c.name}">Done${c.stars ? ' +' + c.stars + '⭐' : ''}</button>` : st.s === 'done' ? html`<button class="btn sm ghost" type="button" data-act="undone" data-v="${c.id}">Undo</button>` : ''}</div></li>`;
+}
+function renderSide() {
+  setHTML($('#side'), html`<div class="brand">${LOGO}<div><b>${APP}</b><span>the whole family’s week, on one calm page</span></div></div>
+  <ul class="nav" role="list">${NAV.map(([k, l, ic]) => html`<li><a href="#" data-nav="${k}" ${UI.view === k ? raw('aria-current="page"') : ''}>${icon(ic)}<span>${l}</span></a></li>`)}</ul>
+  <div class="side-foot">v${APP_VERSION} · offline · no account</div>`);
+  const a = $('#side a[aria-current]'); if (a && window.innerWidth <= 860) a.scrollIntoView({ block: 'nearest', inline: 'center' });
+}
+function updSave() {
+  const el = $('#saveChip'); if (!el) return;
+  if (storageMode !== 'local') setHTML(el, html`<span class="chip bad"><span class="dot"></span>Not being saved in this browser <button class="btn sm" type="button" data-act="export">Save a backup</button></span>`);
+  else if (!saveOk) setHTML(el, html`<span class="chip bad" role="alert"><span class="dot"></span>Changes are NOT being saved in this browser <button class="btn sm" type="button" data-act="export">Save a backup</button></span>`);
+  else setHTML(el, html`<span class="chip"><span class="dot"></span>Saved on this computer</span>`);
+}
+function renderTop() {
+  setHTML($('#topbar'), html`<div id="saveChip"></div><span class="sp"></span><button class="btn ghost" type="button" data-act="themes">🎨 Colors</button><button class="btn ghost logbtn" type="button" data-act="newchore">+ Chore</button><button class="btn primary logbtn" type="button" data-act="newev">+ Add event</button>`);
+  updSave();
+  setHTML($('#sampleBanner'), S.isSample ? html`<div class="banner info"><p>👋 This is an example family (the Riveras), so explore freely. Start your own whenever you are ready.</p><button class="btn primary sm" type="button" data-act="startfresh">Start my own family</button></div>` : html``);
+}
+function banners() {
+  const out = []; const pct = Math.round(lastLen / STORE_MAX * 100);
+  if (pct >= 75) out.push(html`<div class="banner bad" role="alert"><p>Browser storage is ${pct}% full. Save a backup, then clear old chore history in Settings → Backup & data.</p><button class="btn sm" type="button" data-act="export">Save a backup</button></div>`);
+  const real = !S.isSample || S.sampleEdited; const lb = S.settings.lastBackup;
+  if (real && S.events.length + S.chores.length >= 5 && (!lb || dayDiff(lb, today()) >= 7)) out.push(html`<div class="banner"><p>💾 ${lb ? 'Your last backup was ' + plural(dayDiff(lb, today()), 'day') + ' ago.' : 'You have not saved a backup yet.'} A weekly backup keeps your family plan safe if browser data gets cleared.</p><button class="btn sm primary" type="button" data-act="export">Save a backup</button></div>`);
+  return out;
+}
+
+/* ---------- TODAY ---------- */
+function greet() { const h = new Date().getHours(); return h < 5 ? 'Hello, night owls' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; }
+function vToday() {
+  const st = S.settings, t = today(), now = nowMin();
+  const evs = eventsOn(t); const conf = conflictsOn(t); const cids = conflictIds(t);
+  const fam = st.family ? st.family + ' family' : '';
+  const head = html`<div class="head"><div><div class="eyebrow">${dfmt(t, { weekday: 'long', month: 'long', day: 'numeric' })}</div><h1>${greet()}${fam ? ', ' + fam : ''}</h1></div><div class="row noprint"><button class="btn ghost" type="button" data-act="printday">Print today</button>${helpBtn('today')}</div></div>`;
+  const next = evs.find(e => e.start && endMin(e) > now);
+  const nowE = next && tmin(next.start) <= now;
+  const nextCard = html`<div class="focus" aria-live="polite"><div class="em" aria-hidden="true">${next ? (next.emoji || '📌') : '🌤️'}</div><div style="flex:1;min-width:0"><div class="eyebrow">${next ? (nowE ? 'Happening now' : 'Next up · ' + fmtTime(next.start)) : 'Next up'}</div>
+    <div class="txt" data-testid="nextup">${next ? next.title : evs.length ? 'Nothing else on the calendar today' : 'A clear calendar today'}</div>
+    <div class="sub">${next ? timeRange(next) + ' · ' + whoText(next) + (next.place ? ' · ' + next.place : '') : 'Enjoy the space — or add something for later.'}</div>
+    <div class="row">${next ? html`<button class="btn soft sm" type="button" data-act="editev" data-v="${next.id}" data-d="${t}">Open</button>` : ''}<button class="btn ghost sm" type="button" data-act="newev" data-v="${t}">+ Add to today</button></div></div></div>`;
+  const setup = !S.isSample && !st.setupHidden && (S.members.length < 2 || !S.events.length || !S.chores.length) ? html`<div class="card" style="margin-bottom:18px" data-testid="setup"><div class="card-t"><h2>Set up your nest</h2><span class="sp"></span><button class="btn link" type="button" data-act="hidesetup">Not now</button></div><ol class="list">
+    <li class="li"><span class="tile">1</span><span class="mid t">Add your family (grown-ups and kids)</span>${S.members.length ? html`<span class="tag good">${plural(S.members.length, 'person', 'people')}</span>` : ''}<button class="btn sm ${S.members.length ? 'ghost' : 'primary'}" type="button" data-act="newmember">Add a person</button></li>
+    <li class="li"><span class="tile">2</span><span class="mid t">Add one weekly thing (practice, lessons, trash day)</span>${S.events.length ? html`<span class="tag good">${plural(S.events.length, 'event')}</span>` : html`<button class="btn sm primary" type="button" data-act="newev">Add an event</button>`}</li>
+    <li class="li"><span class="tile">3</span><span class="mid t">Add kid-friendly starter chores with stars</span>${S.chores.length ? html`<span class="tag good">${plural(S.chores.length, 'chore')}</span>` : html`<button class="btn sm primary" type="button" data-act="starter">Add starter chores</button>`}</li>
+    <li class="li"><span class="tile">4</span><span class="mid t">Plan tonight’s dinner on Meals & list</span><button class="btn sm ghost" type="button" data-nav="meals">Open</button></li></ol></div>` : '';
+  const people = S.members.length ? S.members : [];
+  const anyone = choresToday('');
+  const col = m => { const mine = evs.filter(e => !e.who.length || e.who.includes(m.id)); const ch = choresToday(m.id); return html`<div class="card pcol" style="--mc:${mColor(m)}" data-testid="pcol"><div class="ph"><span class="av" aria-hidden="true">${m.emoji || m.name.slice(0, 1)}</span><div style="min-width:0"><b>${m.name}</b><span class="tiny muted">${plural(mine.length, 'event')} · ${ch.filter(x => x.st.s !== 'done').length} to do</span></div>${m.kid ? html`<span class="star" title="Star balance">⭐ ${starBalance(m.id)}</span>` : ''}</div>
+    ${mine.length ? html`<div class="evl">${mine.map(e => evChip(e, t, cids.has(e.id)))}</div>` : html`<p class="tiny muted" style="margin:6px 0">Nothing scheduled.</p>`}
+    ${ch.length ? html`<ul class="list mini">${ch.map(x => miniChore(x))}</ul>` : ''}</div>`; };
+  const board = people.length ? html`<div class="pgrid" style="margin-bottom:18px">${people.map(col)}${anyone.length ? html`<div class="card pcol" style="--mc:var(--accent)"><div class="ph"><span class="av" aria-hidden="true">🙌</span><div><b>Anyone</b><span class="tiny muted">first one to do it gets the stars</span></div></div><ul class="list mini">${anyone.map(x => miniChore(x))}</ul></div>` : ''}</div>`
+    : html`<div class="card" style="margin-bottom:18px"><div class="card-t"><h2>Today</h2></div>${evs.length ? html`<div class="evl">${evs.map(e => evChip(e, t, cids.has(e.id)))}</div>` : emptyState('Add your family to see everyone’s day side by side.', 'Add a person', 'newmember')}${anyone.length ? html`<ul class="list mini">${anyone.map(x => miniChore(x))}</ul>` : ''}</div>`;
+  const dinner = S.meals[t] || '';
+  const dinnerCard = html`<div class="card"><div class="card-t"><h2>🍽️ Dinner tonight</h2><span class="sp"></span><button class="btn link" type="button" data-nav="meals">Week plan</button></div><label class="sr" for="dinnerToday">Dinner tonight</label><input type="text" id="dinnerToday" data-meal="${t}" maxlength="80" value="${dinner}" placeholder="What’s for dinner? Type and press Enter"><p class="tiny muted" style="margin-top:6px">${S.meals[addDays(t, 1)] ? 'Tomorrow: ' + S.meals[addDays(t, 1)] : 'Tomorrow is not planned yet.'}</p></div>`;
+  const cds = countdownList(t).filter(x => x.days >= 0).slice(0, 4);
+  const cdCard = html`<div class="card"><div class="card-t"><h2>Counting down</h2><span class="sp"></span><button class="btn link" type="button" data-nav="board">All</button></div>${cds.length ? html`<div class="cds">${cds.map(c => html`<div class="cdt"><span class="ce" aria-hidden="true">${c.emoji}</span><div style="min-width:0"><b>${c.name}</b><span class="tiny muted">${dLong(c.date)}</span></div><span class="cdn">${daysText(c.days)}</span></div>`)}</div>` : emptyState('Birthdays, trips and holidays to look forward to.', 'Add a countdown', 'newcd')}</div>`;
+  const pins = S.notes.filter(n => n.pinned).slice(0, 4);
+  const pinCard = html`<div class="card"><div class="card-t"><h2>📌 On the fridge</h2><span class="sp"></span><button class="btn link" type="button" data-nav="board">Board</button></div>${pins.length ? html`<div class="notes small">${pins.map(n => noteCard(n))}</div>` : html`<p class="empty">Pin a note on the Family board and it shows here.</p>`}</div>`;
+  const warn = conf.length ? html`<div class="banner bad" role="alert" data-testid="conflicts"><p><b>⚠ Heads-up:</b> ${conf.map(conflictText).join(' · ')}</p></div>` : '';
+  return html`${head}${banners()}${setup}${warn}${nextCard}${board}<div class="g3">${dinnerCard}${cdCard}${pinCard}</div>
+  <div class="print-only">${printDay(t)}</div>`;
+}
+function miniChore(x) {
+  const c = x.c, done = x.st.s === 'done'; const rec = done ? doneRec(c.id, today()) : null; const by = rec ? memberOf(rec.by) : null;
+  return html`<li class="li mc ${done ? 'dn' : ''}"><button type="button" class="tick ${done ? 'on' : ''}" data-act="${done ? 'undone' : 'done'}" data-v="${c.id}" aria-pressed="${done ? 'true' : 'false'}" aria-label="${(done ? 'Undo: ' : 'Mark done: ') + c.name}">✓</button><span class="mid" data-act="editchore" data-v="${c.id}" tabindex="0" role="button"><span class="t">${c.emoji ? c.emoji + ' ' : ''}${c.name}</span>${x.st.s === 'waiting' ? html`<span class="tiny muted"> · waiting since ${relDay(x.st.due)}</span>` : ''}${by && !c.who ? html`<span class="tiny muted"> · ${by.name}</span>` : ''}</span>${c.stars ? html`<span class="tiny stars">+${c.stars}⭐</span>` : ''}</li>`;
+}
+function printDay(t) {
+  const evs = eventsOn(t);
+  return html`<h2>${APP} — ${dFull(t)}</h2><ul>${evs.map(e => html`<li><b>${timeRange(e)}</b> ${e.title} — ${whoText(e)}${e.place ? ' @ ' + e.place : ''}</li>`)}</ul>${S.meals[t] ? html`<p>Dinner: ${S.meals[t]}</p>` : ''}<p><b>Chores</b></p><ul>${choresToday(null).map(x => html`<li>☐ ${x.c.name} — ${mLabel(memberOf(x.c.who))}</li>`)}</ul>`;
+}
+
+/* ---------- CALENDAR (week) ---------- */
+function vCalendar() {
+  if (!UI.week) UI.week = weekStartOf(today());
+  const t = today(); const days = Array.from({ length: 7 }, (_, i) => addDays(UI.week, i));
+  const filt = UI.who && memberOf(UI.who) ? UI.who : '';
+  const conf = days.flatMap(conflictsOn).filter(c => !filt || c.who.includes(filt));
+  const chips = S.members.length ? html`<div class="row fchips" role="group" aria-label="Show">${[{ id: '', name: 'Everyone', emoji: '👨‍👩‍👧‍👦' }, ...S.members].map(m => html`<button type="button" class="qbtn ${filt === m.id ? 'on' : ''}" data-act="whofilter" data-v="${m.id}" aria-pressed="${filt === m.id ? 'true' : 'false'}">${m.id ? mdot(m) : ''}${m.emoji ? m.emoji + ' ' : ''}${m.name}</button>`)}</div>` : '';
+  const cols = days.map(d => { const evs = eventsOn(d, filt); const cids = conflictIds(d); const ch = filt ? activeChores().filter(c => c.who === filt && choreOn(c, d)) : []; return html`<div class="card wday ${d === t ? 'today' : ''} ${d < t ? 'past' : ''}" data-day="${d}"><div class="wd"><span>${wdShort(weekday(d))} <b>${+d.slice(8)}</b></span><button class="x add" type="button" data-act="newev" data-v="${d}" aria-label="${'Add an event on ' + dLong(d)}">+</button></div>
+    <div class="evl">${evs.length ? evs.map(e => evChip(e, d, cids.has(e.id))) : html`<span class="tiny muted">Free</span>`}</div>
+    ${ch.length ? html`<ul class="wlist">${ch.map(c => html`<li class="${doneRec(c.id, d) ? 'dn' : ''}">${c.emoji || '✨'} ${c.name}</li>`)}</ul>` : ''}
+    <div class="meal ${S.meals[d] ? '' : 'none'}" data-act="editmeal" data-v="${d}" role="button" tabindex="0" aria-label="${'Dinner on ' + dLong(d) + ': ' + (S.meals[d] || 'not planned')}">🍽️ ${S.meals[d] || 'Dinner?'}</div></div>`; });
+  const ag = agenda(t, UI.agenda, filt);
+  return html`<div class="head"><div><div class="eyebrow">Family calendar</div><h1>Week of ${dfmt(UI.week, { month: 'long', day: 'numeric' })}</h1><p class="lead">Color shows who it’s for. ⚠ means two things overlap for the same person.</p></div>
+  <div class="row noprint"><button class="btn ghost sm" type="button" data-act="wprev" aria-label="Previous week">‹</button><button class="btn ghost sm" type="button" data-act="wtoday">This week</button><button class="btn ghost sm" type="button" data-act="wnext" aria-label="Next week">›</button><button class="btn ghost sm" type="button" data-act="print">🖨 Fridge sheet</button><button class="btn primary sm" type="button" data-act="newev">+ Add event</button>${helpBtn('calendar')}</div></div>
+  <div class="noprint">${chips}
+  ${conf.length ? html`<div class="banner bad" data-testid="wconflicts"><p><b>⚠ ${plural(conf.length, 'overlap')} this week:</b></p><ul class="small" style="margin:0;width:100%">${conf.map(c => html`<li>${dLong(c.d)} — ${conflictText(c)}</li>`)}</ul></div>` : ''}
+  <div class="week" data-testid="week">${cols}</div>
+  <div class="card" style="margin-top:18px"><div class="card-t"><h2>Coming up</h2><span class="sp"></span><div class="seg" role="radiogroup" aria-label="How far ahead">${[7, 14, 30].map(n => html`<label><input type="radio" name="agn" data-act="agenda" value="${n}" ${UI.agenda === n ? raw('checked') : ''}>${n} days</label>`)}</div></div>
+  ${ag.length ? html`<div class="tw"><table class="tbl" data-testid="agenda"><thead><tr><th>Day</th><th class="hm">Time</th><th>What</th><th class="hm">Who</th><th class="hm">Where</th></tr></thead><tbody>${ag.map(x => html`<tr data-act="editev" data-v="${x.e.id}" data-d="${x.d}" tabindex="0"><td style="white-space:nowrap">${relDay(x.d) === 'today' || relDay(x.d) === 'tomorrow' ? relDay(x.d)[0].toUpperCase() + relDay(x.d).slice(1) : dLong(x.d)}</td><td class="hm" style="white-space:nowrap">${timeRange(x.e)}</td><td class="w">${x.e.emoji ? x.e.emoji + ' ' : ''}${x.e.title}<span class="mcat">${timeRange(x.e) + ' · ' + whoText(x.e)}</span></td><td class="hm">${whoText(x.e)}</td><td class="hm">${x.e.place || '—'}</td></tr>`)}</tbody></table></div>` : emptyState('Nothing in the next ' + UI.agenda + ' days.', 'Add an event', 'newev')}
+  <div class="row" style="margin-top:12px"><button class="btn sm ghost" type="button" data-act="exportcal">Export next 90 days (CSV)</button></div></div></div>
+  <div class="print-only">${fridgeSheet(days)}</div>`;
+}
+function fridgeSheet(days) {
+  const people = S.members.length ? S.members : [];
+  return html`<div class="fridge"><div class="fh"><b>${S.settings.family ? 'The ' + S.settings.family + ' family' : APP} · week of ${dfmt(days[0], { month: 'long', day: 'numeric', year: 'numeric' })}</b><span>${APP} v${APP_VERSION}</span></div>
+  <table class="ft"><thead><tr><th></th>${days.map(d => html`<th>${wdShort(weekday(d))} ${+d.slice(8)}</th>`)}</tr></thead><tbody>
+  <tr><th>Calendar</th>${days.map(d => html`<td>${eventsOn(d).map(e => html`<div class="fe"><b>${e.start ? fmtTime(e.start) : '•'}</b> ${e.title}${e.who.length ? html` <i>(${whoText(e)})</i>` : ''}</div>`)}</td>`)}</tr>
+  <tr><th>Dinner</th>${days.map(d => html`<td>${S.meals[d] || ''}</td>`)}</tr>
+  ${[...people, null].map(m => { const list = activeChores().filter(c => (m ? c.who === m.id : !c.who)); if (!list.length) return ''; return html`<tr><th>${m ? mLabel(m) : 'Anyone'}</th>${days.map(d => html`<td>${list.filter(c => choreOn(c, d)).map(c => html`<div class="fe">${doneRec(c.id, d) ? '☑' : '☐'} ${c.name}</div>`)}</td>`)}</tr>`; })}
+  </tbody></table></div>`;
+}
+
+/* ---------- CHORES & STARS ---------- */
+function vChores() {
+  const t = today(); const ws = weekStartOf(t); const kids = S.members.filter(m => m.kid); const people = S.members;
+  const filt = UI.choreWho;
+  const cards = people.length ? html`<div class="g4" style="margin-bottom:18px" data-testid="starcards">${(kids.length ? kids : people).map(m => { const w = weekStars(m.id, ws), bal = starBalance(m.id); return html`<div class="card kpi scard" style="--mc:${mColor(m)}"><div class="k">${mLabel(m)}</div><div class="v" data-testid="bal">⭐ ${bal}</div><div class="s">${plural(w, 'star')} this week · ${plural(starsEarned(m.id), 'star')} earned in all</div></div>`; })}</div>` : '';
+  const today_ = choresToday(null).filter(x => !filt || x.c.who === filt);
+  const all = S.chores.filter(c => !c.archived && (!filt || c.who === filt)).sort((a, b) => (mLabel(memberOf(a.who))).localeCompare(mLabel(memberOf(b.who))) || a.name.localeCompare(b.name));
+  const chips = people.length ? html`<div class="row fchips" role="group" aria-label="Show chores for">${[{ id: '', name: 'Everyone' }, ...people].map(m => html`<button type="button" class="qbtn ${filt === m.id ? 'on' : ''}" data-act="chorewho" data-v="${m.id}" aria-pressed="${filt === m.id ? 'true' : 'false'}">${m.id ? mdot(m) : ''}${m.emoji ? m.emoji + ' ' : ''}${m.name}</button>`)}</div>` : '';
+  const days = Array.from({ length: 28 }, (_, i) => addDays(t, i - 27));
+  const weeks = [3, 2, 1, 0].map(k => addDays(ws, -7 * k));
+  const ser = (kids.length ? kids : people).slice(0, 6).map(m => ({ name: m.name, color: mColor(m), vals: weeks.map(w => weekStars(m.id, w)) }));
+  const donutItems = [...people, null].map(m => ({ id: m ? m.id : 'none', label: m ? m.name : 'Not assigned', emoji: m ? m.emoji : '', color: mColor(m), val: S.log.filter(l => l.date >= days[0] && (m ? l.by === m.id : !l.by)).length })).filter(x => x.val > 0).sort((a, b) => b.val - a.val);
+  const rewards = html`<div class="card"><div class="card-t"><h2>🎁 Rewards</h2><span class="sp"></span><button class="btn sm ghost" type="button" data-act="newreward">+ Reward</button>${helpBtn('rewards')}</div>${S.rewards.length ? html`<ul class="list">${S.rewards.slice().sort((a, b) => a.cost - b.cost).map(r => html`<li class="li"><div class="tile">${r.emoji || '🎁'}</div><div class="mid" data-act="editreward" data-v="${r.id}" tabindex="0" role="button"><div class="t">${r.name}</div><div class="k">${plural(r.cost, 'star')}</div></div><button class="btn sm primary" type="button" data-act="redeem" data-v="${r.id}" ${people.length ? '' : raw('disabled')}>Use stars</button></li>`)}</ul>` : emptyState('Add a few rewards your kids can save stars for.', '+ Reward', 'newreward')}
+    ${S.redeems.length ? html`<details style="margin-top:12px"><summary class="small">Rewards used (${S.redeems.length})</summary><ul class="list">${S.redeems.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : b.at - a.at).slice(0, 30).map(r => { const m = memberOf(r.memberId); return html`<li class="li"><div class="tile">${r.emoji || '🎁'}</div><div class="mid"><div class="t">${r.name}</div><div class="k">${mLabel(m)} · ${dLong(r.date)} · −${plural(r.cost, 'star')}</div></div><button class="x" type="button" data-act="redeemdel" data-v="${r.id}" aria-label="Give these stars back">×</button></li>`; })}</ul></details>` : ''}</div>`;
+  return html`<div class="head"><div><div class="eyebrow">Chores & stars</div><h1>Many hands, light work</h1><p class="lead">Tick a chore to earn its stars. Missed days never pile up — each chore waits as one item.</p></div><div class="row noprint"><button class="btn primary" type="button" data-act="newchore">+ Add a chore</button><button class="btn ghost" type="button" data-act="starter">Starter chores</button><button class="btn ghost" type="button" data-act="print">🖨 Chore chart</button>${helpBtn('chores')}</div></div>
+  <div class="noprint">${cards}${chips}
+  <div class="g2" style="margin-bottom:18px"><div class="card"><div class="card-t"><h2>Today’s chores</h2></div>${today_.length ? html`<ul class="list" data-testid="choretoday">${today_.map(x => choreRow(x.c))}</ul>` : emptyState(S.chores.length ? 'Nothing due today. Enjoy it!' : 'No chores yet. Starter chores are a quick way in.', S.chores.length ? null : 'Add starter chores', 'starter')}</div>${rewards}</div>
+  <div class="g2" style="margin-bottom:18px"><div class="card"><div class="card-t"><h2>Stars per week</h2></div>${ser.length && ser.some(s => s.vals.some(v => v > 0)) ? barChart(weeks.map(w => dShort(w)), ser, 220, { tips: weeks.map(w => 'Week of ' + dShort(w)), aria: 'Stars earned per week, last 4 weeks' }) : html`<p class="empty">Stars earned each week show up here.</p>`}</div>
+  <div class="card"><div class="card-t"><h2>Who pitched in</h2><span class="tiny muted">last 28 days</span></div>${donutBlock(donutItems, 'Chores done', String(sum(donutItems, x => x.val)), { empty: 'Ticked chores show up here.' })}</div></div>
+  <div class="card"><div class="card-t"><h2>All chores</h2><span class="sp"></span><button class="btn sm ghost" type="button" data-act="exportchores">Export history (CSV)</button></div>${all.length ? html`<ul class="list" data-testid="choreall">${all.map(c => choreRow(c))}</ul>` : html`<p class="empty">No chores${filt ? ' for this person' : ''} yet.</p>`}
+  ${S.chores.some(c => c.archived) ? html`<details style="margin-top:12px"><summary class="small">Paused chores (${S.chores.filter(c => c.archived).length})</summary><ul class="list">${S.chores.filter(c => c.archived).map(c => html`<li class="li"><div class="mid" data-act="editchore" data-v="${c.id}" tabindex="0" role="button"><div class="t">${c.name}</div><div class="k">Paused · ${freqText(c)}</div></div></li>`)}</ul></details>` : ''}</div></div>
+  <div class="print-only">${choreChart()}</div>`;
+}
+function choreChart() {
+  const ws = weekStartOf(today()); const days = Array.from({ length: 7 }, (_, i) => addDays(ws, i));
+  return html`<div class="fridge"><div class="fh"><b>Chore chart · week of ${dfmt(ws, { month: 'long', day: 'numeric' })}</b><span>${APP}</span></div>${[...S.members, null].map(m => { const list = activeChores().filter(c => m ? c.who === m.id : !c.who); if (!list.length) return ''; return html`<h3>${m ? mLabel(m) : 'Anyone'}</h3><table class="ft"><thead><tr><th>Chore</th>${days.map(d => html`<th>${wdShort(weekday(d))}</th>`)}</tr></thead><tbody>${list.map(c => html`<tr><td>${c.name}${c.stars ? ' (' + c.stars + '⭐)' : ''}</td>${days.map(d => html`<td class="cb">${choreOn(c, d) ? (doneRec(c.id, d) ? '☑' : '☐') : ''}</td>`)}</tr>`)}</tbody></table>`; })}</div>`;
+}
+
+/* ---------- MEALS & SHOPPING ---------- */
+function vMeals() {
+  if (!UI.week) UI.week = weekStartOf(today());
+  const t = today(); const days = Array.from({ length: 7 }, (_, i) => addDays(UI.week, i));
+  const cats = SHOP_CATS.map(([k, l]) => ({ k, l, items: S.shop.filter(s => s.cat === k).sort((a, b) => (a.done - b.done) || a.at - b.at) })).filter(c => c.items.length);
+  const left = S.shop.filter(s => !s.done).length;
+  return html`<div class="head"><div><div class="eyebrow">Meals & shopping</div><h1>What’s for dinner?</h1><p class="lead">Plan dinners for the week and keep one shared shopping list.</p></div><div class="row noprint"><button class="btn ghost sm" type="button" data-act="wprev" aria-label="Previous week">‹</button><button class="btn ghost sm" type="button" data-act="wtoday">This week</button><button class="btn ghost sm" type="button" data-act="wnext" aria-label="Next week">›</button><button class="btn ghost sm" type="button" data-act="print">🖨 Print list</button>${helpBtn('meals')}</div></div>
+  <div class="g2 noprint"><div class="card"><div class="card-t"><h2>Dinners · week of ${dShort(UI.week)}</h2><span class="sp"></span><button class="btn sm ghost" type="button" data-act="copyweek">Copy last week</button></div>
+    <div class="meals" data-testid="meals">${days.map(d => html`<div class="mrow2 ${d === t ? 'today' : ''}"><label for="${'meal_' + d}"><b>${wdShort(weekday(d))}</b> <span class="muted">${dShort(d)}</span></label><input type="text" id="${'meal_' + d}" data-meal="${d}" maxlength="80" value="${S.meals[d] || ''}" placeholder="${d < t ? '—' : 'e.g. Tacos'}"></div>`)}</div><p class="tiny muted" style="margin-top:8px">Changes save when you press Enter or leave the box.</p></div>
+  <div class="card"><div class="card-t"><h2>Shopping list</h2><span class="sp"></span><span class="tag ${left ? 'gold' : 'good'}" data-testid="shopleft">${left ? left + ' to get' : 'All got'}</span>${helpBtn('shop')}</div>
+    <div class="row" style="margin-bottom:10px"><label class="sr" for="shopIn">Add an item</label><input type="text" id="shopIn" maxlength="80" placeholder="Milk, apples, trash bags… press Enter" style="flex:1;min-width:160px"><label class="sr" for="shopCat">Aisle</label><select id="shopCat" style="width:auto"><option value="">Aisle: guess for me</option>${SHOP_CATS.map(([k, l]) => html`<option value="${k}">${l}</option>`)}</select></div>
+    ${cats.length ? cats.map(c => html`<div class="scat"><div class="eyebrow" style="margin:10px 0 4px">${c.l}</div>${c.items.map(s => html`<div class="note ${s.done ? 'done' : ''}"><input type="checkbox" id="${'sh_' + s.id}" data-act="shoptoggle" data-v="${s.id}" ${s.done ? raw('checked') : ''}><label for="${'sh_' + s.id}">${s.text}</label><button class="x" type="button" data-act="shopdel" data-v="${s.id}" aria-label="${'Remove ' + s.text}">×</button></div>`)}</div>`) : html`<p class="empty">Your list is empty. Add items as you notice them.</p>`}
+    ${S.shop.some(s => s.done) ? html`<button class="btn sm ghost" type="button" data-act="shopclear" style="margin-top:8px">Clear checked items</button>` : ''}</div></div>
+  <div class="print-only"><h2>Shopping list · ${dLong(t)}</h2>${SHOP_CATS.map(([k, l]) => { const it = S.shop.filter(s => s.cat === k && !s.done); return it.length ? html`<h3>${l}</h3><ul>${it.map(s => html`<li>☐ ${s.text}</li>`)}</ul>` : ''; })}<h3>Dinners</h3><ul>${days.map(d => html`<li>${dLong(d)}: ${S.meals[d] || '—'}</li>`)}</ul></div>`;
+}
+
+/* ---------- FAMILY BOARD ---------- */
+function noteCard(n) { const m = memberOf(n.by); return html`<div class="sticky ${n.pinned ? 'pin' : ''}" style="--mc:${mColor(m)}"><p>${n.text}</p><div class="row tiny"><span class="muted">${m ? m.name : ''}</span><span class="sp"></span><button class="btn link tiny" type="button" data-act="notepin" data-v="${n.id}">${n.pinned ? 'Unpin' : 'Pin to Today'}</button><button class="x" type="button" data-act="notedel" data-v="${n.id}" aria-label="Delete note">×</button></div></div>`; }
+function vBoard() {
+  const cds = countdownList(today());
+  return html`<div class="head"><div><div class="eyebrow">Family board</div><h1>Notes, numbers & countdowns</h1><p class="lead">The stuff that usually lives on the fridge door.</p></div><div class="row noprint"><button class="btn ghost" type="button" data-act="print">🖨 Info sheet</button>${helpBtn('board')}</div></div>
+  <div class="noprint"><div class="card" style="margin-bottom:18px"><div class="card-t"><h2>Notes</h2></div><div class="row" style="margin-bottom:12px"><label class="sr" for="noteIn">Write a note</label><input type="text" id="noteIn" maxlength="300" placeholder="Picture day Thursday! Press Enter to post" style="flex:1;min-width:180px">${S.members.length ? html`<label class="sr" for="noteBy">From</label><select id="noteBy" style="width:auto"><option value="">From: —</option>${S.members.map(m => html`<option value="${m.id}">${mLabel(m)}</option>`)}</select>` : ''}</div>
+    ${S.notes.length ? html`<div class="notes" data-testid="notes">${S.notes.slice().sort((a, b) => b.pinned - a.pinned || b.at - a.at).map(noteCard)}</div>` : html`<p class="empty">Post reminders for everyone. Pin the important ones to Today.</p>`}</div>
+  <div class="g2"><div class="card"><div class="card-t"><h2>Countdowns & birthdays</h2><span class="sp"></span><button class="btn sm ghost" type="button" data-act="newcd">+ Countdown</button></div>${cds.length ? html`<div class="cds" data-testid="cds">${cds.map(c => html`<div class="cdt ${c.days < 0 ? 'past' : ''}" ${c.kind === 'cd' ? html`data-act="editcd" data-v="${c.id}" role="button" tabindex="0"` : html`data-act="editmember" data-v="${c.id}" role="button" tabindex="0"`}><span class="ce" aria-hidden="true">${c.emoji}</span><div style="min-width:0"><b>${c.name}</b><span class="tiny muted">${dFull(c.date)}</span></div><span class="cdn">${daysText(c.days)}</span></div>`)}</div>` : emptyState('Add trips, holidays and special days. Birthdays from Settings → Family appear here too.', '+ Countdown', 'newcd')}</div>
+  <div class="card"><div class="card-t"><h2>Important info</h2><span class="sp"></span><button class="btn sm ghost" type="button" data-act="newinfo">+ Add</button></div>${S.info.length ? html`<dl class="kv info" data-testid="info">${S.info.map(i => html`<dt data-act="editinfo" data-v="${i.id}" role="button" tabindex="0">${i.label}</dt><dd>${i.value}</dd>`)}</dl>` : emptyState('Doctor, school, babysitter, Wi-Fi — everything a sitter or grandparent needs.', 'Add common labels', 'infostarter')}<p class="tiny muted" style="margin-top:10px">Stored in this browser only and not encrypted — skip passwords you need to keep private.</p></div></div></div>
+  <div class="print-only"><h2>${S.settings.family ? 'The ' + S.settings.family + ' family' : 'Family'} — important info</h2><dl class="kv">${S.info.map(i => html`<dt>${i.label}</dt><dd>${i.value}</dd>`)}</dl>${S.members.length ? html`<h3>Family</h3><ul>${S.members.map(m => html`<li>${m.name}${m.birthday ? ' — birthday ' + dfmt(m.birthday, { month: 'long', day: 'numeric' }) : ''}</li>`)}</ul>` : ''}<p class="tiny">Printed ${dLong(today())} from ${APP}</p></div>`;
+}
+
+/* ---------- SETTINGS ---------- */
+function themeTile(th, selected) {
+  return html`<button type="button" class="ttile ${selected ? 'on' : ''}" data-act="palette" data-v="${th.key}" data-live="1" aria-pressed="${selected ? 'true' : 'false'}">${selected ? html`<span class="ck">✓</span>` : ''}<div class="tprev" style="background:${th.bg}"><div class="mini"><div class="pb" style="background:${th.accent}"></div><div class="ln" style="background:${th.soft}"></div><div class="bars">${th.charts.slice(0, 5).map((c, i) => html`<i style="background:${c};height:${[60, 90, 45, 75, 100][i]}%"></i>`)}</div><span style="width:8px;height:8px;border-radius:50%;background:${th.accent2}"></span></div><div class="tabsw">${th.months.slice(0, 4).map(c => html`<i style="background:${c}"></i>`)}</div></div><b>${th.name}</b><span>${th.vibe}</span></button>`;
+}
+function themeTiles() { const p = S.settings.palette, base = p === 'custom' ? S.settings.custom.base : p; return html`<div class="tiles">${Object.values(THEMES).map(th => themeTile(th, th.key === base))}</div>`; }
+function vSettings() {
+  const st = S.settings; const th = currentTheme();
+  return html`<div class="head"><div><div class="eyebrow">Settings</div><h1>Settings</h1></div></div>
+  <div class="g2" style="margin-bottom:18px"><div class="card" id="family"><div class="card-t"><h2>Family</h2></div>
+    <div class="field"><label for="s_family">Family name (optional)</label><input type="text" id="s_family" data-set="family" maxlength="40" value="${st.family}" placeholder="e.g. Rivera"></div>
+    <div class="fgrid"><div class="field"><label for="s_ws">Week starts on</label><select id="s_ws" data-set="weekStart"><option value="0" ${st.weekStart === 0 ? raw('selected') : ''}>Sunday</option><option value="1" ${st.weekStart === 1 ? raw('selected') : ''}>Monday</option></select></div>
+    <div class="field"><label for="s_clock">Clock</label><select id="s_clock" data-set="clock"><option value="12" ${st.clock === '12' ? raw('selected') : ''}>12-hour (4:30 PM)</option><option value="24" ${st.clock === '24' ? raw('selected') : ''}>24-hour (16:30)</option></select></div></div>
+    <h3 style="margin:12px 0 8px">People</h3>${S.members.length ? html`<ul class="list" data-testid="members">${S.members.map(m => html`<li class="li" data-act="editmember" data-v="${m.id}" tabindex="0" role="button"><div class="tile" style="box-shadow:inset 0 -4px 0 ${mColor(m)}">${m.emoji || '🙂'}</div><div class="mid"><div class="t">${m.name}</div><div class="k">${m.kid ? 'Kid · earns stars' : 'Grown-up'}${m.birthday ? ' · 🎂 ' + dfmt(m.birthday, { month: 'short', day: 'numeric' }) : ''}</div></div><span class="small muted">${plural(S.chores.filter(c => c.who === m.id).length, 'chore')}</span></li>`)}</ul>` : html`<p class="small muted">Add everyone who lives in your home. Each person gets a color on the calendar.</p>`}<button class="btn sm ghost" type="button" data-act="newmember" ${S.members.length >= LIMITS.members ? raw('disabled') : ''}>+ Add a person</button></div>
+  <div class="card"><div class="card-t"><h2>Look & feel</h2></div><div class="seg" role="radiogroup" aria-label="Light or dark">${[['auto', 'Auto'], ['light', 'Light'], ['dark', 'Dark']].map(([k, l]) => html`<label><input type="radio" name="themeMode" data-set="theme" value="${k}" ${st.theme === k ? raw('checked') : ''}>${l}</label>`)}</div>
+    <p class="small muted" style="margin:12px 0">12 color themes. Family member colors stay the same in every theme.</p>${themeTiles()}
+    <h3 style="margin:18px 0 8px">Fine-tune</h3><div class="row">${[['accent', 'Main color'], ['accent2', 'Second color'], ['gold', 'Highlight']].map(([k, l]) => html`<label class="row small" style="gap:6px"><input type="color" data-color="${k}" value="${k === 'accent2' ? th.accent2 : th[k]}" aria-label="${l}">${l}</label>`)}</div>${st.palette === 'custom' ? html`<button class="btn sm ghost" type="button" data-act="palette" data-v="${st.custom.base}" style="margin-top:10px">Undo my custom colors</button>` : ''}</div></div>
+  <div class="card" id="backup"><div class="card-t"><h2>Backup & data</h2></div>
+    <p class="small">Last backup: <b>${st.lastBackup ? dLong(st.lastBackup) : 'never'}</b>. Storage used: ${Math.round(lastLen / STORE_MAX * 100)}% of what this browser allows. ${plural(S.events.length, 'event')}, ${plural(S.chores.length, 'chore')}, ${plural(S.log.length, 'done record')}.</p>
+    <div class="row" style="margin-bottom:12px"><button class="btn primary" type="button" data-act="export">Save a backup (.json)</button><label class="btn ghost" for="importFile" style="cursor:pointer">Restore a backup</label><input type="file" id="importFile" accept=".json,application/json" hidden><button class="btn ghost" type="button" data-act="exportcal">Calendar CSV</button><button class="btn ghost" type="button" data-act="exportchores">Chore history CSV</button></div>
+    <div class="row"><button class="btn ghost" type="button" data-act="purge">Clear chore history before…</button><button class="btn ghost" type="button" data-act="loadsample">Load example family</button><button class="btn danger" type="button" data-act="erase">Erase everything</button></div></div>`;
+}
+
+/* ---------- GUIDE ---------- */
+function vGuide() {
+  const c = (t, body) => html`<div class="card guide" style="margin-bottom:18px"><h2 style="margin-bottom:10px">${t}</h2>${body}</div>`;
+  return html`<div class="head"><div><div class="eyebrow">Guide</div><h1>How Busy Nest works</h1><p class="lead">Short and friendly. Read what you need, skip the rest.</p></div><button class="btn ghost noprint" type="button" data-act="print">Print this guide</button></div>
+  ${c('Start here', html`<ol><li>Look around the Rivera family’s example, then press <b>Start my own family</b>.</li><li>Add each person in your home (Settings → Family). Mark kids so they can earn stars.</li><li>Add your weekly things: practices, lessons, work shifts, trash day. Set them to repeat.</li><li>Add <b>Starter chores</b>, then assign them to people (or leave them for “Anyone”).</li><li>Plan a few dinners and start the shopping list.</li><li>Save a backup every week (Settings → Backup & data).</li></ol>`)}
+  ${c('Today', html`<p>One column per person: their events and chores for today. <b>Next up</b> shows what’s coming. Tick a chore to give its stars to the person who did it. ⚠ means two things overlap for the same person — time to find a driver.</p>`)}
+  ${c('Calendar', html`<ul><li>Events can be one time, weekly (pick days), every 2 weeks, monthly or yearly. Monthly on the 29th–31st uses the last day in shorter months.</li><li>Leave “Who” empty for the whole family.</li><li>Open a repeating event and press <b>Skip this day</b> to cancel just one date (for example, no practice on a holiday).</li><li>Press <b>Fridge sheet</b> to print the week — events, dinners and everyone’s chores on one page.</li><li>Press <b>N</b> anywhere to add an event.</li></ul>`)}
+  ${c('Chores & stars', html`<ul><li>Each chore has one “next time”. If it’s missed it simply waits — it never turns into five overdue copies. “Every few days” counts from the last time it was done.</li><li>Chores for “Anyone”: when you tick one, choose who did it.</li><li>Stars add up. Press <b>Use stars</b> on a reward to spend them. Made a mistake? Press × on a used reward to give the stars back.</li><li>Print a chore chart for the week if your kids like ticking boxes on paper.</li></ul>`)}
+  ${c('Meals, list & board', html`<ul><li>Type tonight’s dinner on Today or plan the whole week on Meals & list. <b>Copy last week</b> fills empty days.</li><li>The shopping list guesses the aisle for common items. Tick items in the store, then <b>Clear checked items</b>.</li><li>Family board: notes (pin the important ones to Today), countdowns and birthdays, and an important-info sheet you can print for a babysitter.</li></ul>`)}
+  ${c('Your data & privacy', html`<p>Busy Nest works offline and never sends your data anywhere. It is stored in this browser on this computer — not inside the HTML file and not in a cloud. There is no account and no sync, so it works best on one shared family computer. It is not encrypted, so anyone using this browser profile can open it. There are no notifications or reminders.</p>`)}
+  ${c('Browser tips', html`<ul><li>Use Google Chrome on a computer, and open the same file in the same browser every time.</li><li>Clearing browsing data, or using a private/incognito window, erases what is stored.</li><li>Safari may clear data from files that have not been opened for about a week.</li><li>Moving to a new computer? Save a backup, copy it over, then use Restore a backup.</li></ul>`)}
+  ${c('Make it yours', html`<p>Press <b>🎨 Colors</b> to try the 12 themes, or fine-tune three colors in Settings. Dark mode follows your computer, or pick Light/Dark yourself.</p>`)}
+  <p class="foot">${APP} v${APP_VERSION}.</p>`;
+}
+
+const HELP = {
+  today: ['Today', html`<p>Everyone’s events and chores for today, side by side. Tick a chore to earn its stars. A waiting chore is one that was missed — it waits as a single item and never piles up.</p>`],
+  calendar: ['Calendar', html`<p>Each event shows the color of the person it’s for (several people: second color; everyone: main color). Tap a day’s + to add an event on that day, or tap 🍽️ to plan dinner. ⚠ marks events that overlap for the same person.</p>`],
+  chores: ['Chores & stars', html`<p>Give each chore a few stars. Kids see their balance on Today and here. “Waiting” means it was due earlier and is still open — just once.</p>`],
+  rewards: ['Rewards', html`<p>Rewards cost stars. Press <b>Use stars</b>, pick who is using them, and the stars come off their balance. You can only spend stars someone has.</p>`],
+  meals: ['Meals', html`<p>Plan dinners a week at a time. Use the arrows to plan ahead. Tonight’s dinner also shows on Today.</p>`],
+  shop: ['Shopping list', html`<p>Type an item and press Enter. Busy Nest guesses the aisle (you can choose one instead). Tick items as you shop.</p>`],
+  board: ['Family board', html`<p>Notes for everyone, countdowns to fun days, and the important numbers a sitter needs. Print the info sheet for the fridge.</p>`]
+};
+
+/* ==========================================================================
+   Forms & actions
+   ========================================================================== */
+const EMOJI_SUGGEST = '⚽ 🏀 🎹 🎨 🏊 🩰 📚 🏫 💼 🩺 🦷 🎂 🎉 🛒 🍽️ 🗑️ 🚗 ✈️ 🏖️ 🐶 ⛪ 🎬 🧹 ⭐'.split(' ');
+const PEOPLE_EMOJI = '👩 👨 🧑 👧 👦 👶 👵 👴 🧒 🙂 😺 🐶'.split(' ');
+const CHORE_EMOJI = '🛏️ 🍽️ 🧽 🗑️ 👕 🧸 🐾 🪴 🎒 📚 🧹 🛒 🚗 🧺 🦷 ⭐'.split(' ');
+const CD_EMOJI = '🎉 🎂 🏖️ ✈️ 🎄 🎃 🏕️ 🎢 👵 🎓 💍 ❄️'.split(' ');
+const STARTER = [
+  ['🛏️', 'Make your bed', 1, 'daily'], ['🍽️', 'Set the table', 1, 'daily'], ['🧽', 'Clear the table', 1, 'daily'], ['📚', 'Read for 20 minutes', 1, 'daily'],
+  ['🐾', 'Feed the pet', 1, 'daily'], ['🎒', 'Pack your school bag', 1, 'weekly', [0, 1, 2, 3, 4]], ['🍽️', 'Unload the dishwasher', 2, 'days', null, 2],
+  ['🧸', 'Tidy your room', 2, 'weekly', [3, 6]], ['👕', 'Put clean laundry away', 2, 'weekly', [6]], ['🗑️', 'Take out the trash', 2, 'weekly', [1, 4]],
+  ['🪴', 'Water the plants', 1, 'weekly', [0]], ['🛒', 'Help put groceries away', 2, 'weekly', [6]]
+];
+function starterChore(row, start) { const [emoji, name, stars, freq, days, every] = row; return { id: uid('c'), name, emoji, who: '', stars, freq, every: every || 2, days: freq === 'weekly' ? days : [], monthDay: 1, date: '', start, archived: false, note: '' }; }
+const memberOpts = () => [['', 'Anyone'], ...S.members.map(m => [m.id, mLabel(m)])];
+
+/* ---------- events ---------- */
+function openEvent(id, dateArg) {
+  const e = id ? byId(S.events, id) : null; const td = today(); const d0 = dateArg && isDate(dateArg) ? dateArg : td;
+  const v = e ? Object.assign({}, e, { allday: !e.start, days: e.days.length ? e.days : [weekday(e.date)] }) : { title: '', emoji: '', who: [], date: d0, allday: false, start: '16:00', end: '17:00', place: '', repeat: 'once', days: [weekday(d0)], until: '', note: '' };
+  const fields = [
+    { k: 'title', l: 'What’s happening?', req: true, max: 60, ph: 'e.g. Soccer practice' },
+    { k: 'emoji', l: 'Emoji (optional)', t: 'emoji' },
+    ...(S.members.length ? [{ k: 'who', l: 'Who is it for? (none ticked = everyone)', t: 'members' }] : []),
+    { k: 'date', l: 'Date (first time, if it repeats)', t: 'date', req: true },
+    { k: 'allday', l: 'All day (no set time)', t: 'check' },
+    { k: 'start', l: 'Starts', t: 'time', req: true, half: true, show: x => !x.allday }, { k: 'end', l: 'Ends (optional)', t: 'time', half: true, show: x => !x.allday },
+    { k: 'repeat', l: 'Repeats', t: 'seg', opts: Object.entries(REPEAT) },
+    { k: 'days', l: 'On which days?', t: 'checks', req: true, opts: [0, 1, 2, 3, 4, 5, 6].map(i => [i, wdShort(i)]), show: x => x.repeat === 'weekly' || x.repeat === 'biweekly' },
+    { k: 'until', l: 'Repeat until (optional)', t: 'date', show: x => x.repeat !== 'once', hint: 'Leave empty to keep repeating.' },
+    { k: 'place', l: 'Where (optional)', max: 60 },
+    { k: 'note', l: 'Note (optional)', max: 200 }
+  ];
+  const isRep = e && e.repeat !== 'once';
+  openForm(e ? 'Edit event' : 'Add an event', fields, v, x => {
+    const f = { title: x.title, emoji: x.emoji, who: S.members.length ? (x.who || []) : [], date: x.date, start: x.allday ? '' : x.start, end: x.allday ? '' : (x.end || ''), place: x.place, repeat: x.repeat, days: (x.repeat === 'weekly' || x.repeat === 'biweekly') ? x.days : [], until: x.repeat === 'once' ? '' : (x.until || ''), note: x.note };
+    if (f.end && tmin(f.end) <= tmin(f.start)) { fieldErr('end', 'The end time must be after the start.'); return false; }
+    if (f.until && f.until < f.date) { fieldErr('until', 'This must be on or after the first date.'); return false; }
+    return commit(d => {
+      if (e) { const y = byId(d.events, e.id); if (!y) return 'This event no longer exists.'; Object.assign(y, f); y.skips = y.skips.filter(s => s >= f.date); }
+      else { if (d.events.length >= LIMITS.events) return 'Event limit reached (' + LIMITS.events + ').'; d.events.push(Object.assign({ id: uid('e'), skips: [] }, f)); }
+    }, { toast: e ? 'Event saved' : 'Added to the calendar' }) ? undefined : false;
+  }, e ? () => undoable('“' + e.title + '” deleted', d => { d.events = d.events.filter(y => y.id !== e.id); }) : null,
+  { delTitle: e ? 'Delete “' + e.title + '”' + (isRep ? ' (every time)?' : '?') : '', delMsg: isRep ? 'This removes every repeat of this event. To cancel just one day, use “Skip this day” instead. You can undo right after.' : 'You can undo right after.', delLabel: isRep ? 'Delete all' : 'Delete', focus: '#f_title' });
+  if (isRep && dateArg && occursOn(e, dateArg)) { const box = document.createElement('div'); box.className = 'banner info'; const p = document.createElement('p'); p.textContent = 'Repeats: ' + repeatText(e) + '.'; const b = document.createElement('button'); b.type = 'button'; b.className = 'btn sm ghost'; b.dataset.testid = 'skipday'; b.textContent = 'Skip ' + dLong(dateArg) + ' only'; b.onclick = () => { closeLayer('modal'); skipDay(e.id, dateArg); }; box.append(p, b); $('#modal form').prepend(box); }
+}
+function fieldErr(k, msg) { const w = $('#modal [data-field="' + k + '"]'); if (!w) { toast(msg); return; } $('.ferr', w).textContent = msg; const i = $('input,select', w); if (i) i.focus(); toast(msg); }
+function skipDay(id, d) { const e = byId(S.events, id); if (!e) return; undoable('“' + e.title + '” skipped on ' + dLong(d), x => { const y = byId(x.events, id); if (!y) return 'This event no longer exists.'; if (!y.skips.includes(d)) { y.skips.push(d); y.skips.sort(); } }); }
+
+/* ---------- people ---------- */
+function openMember(id) {
+  const m = id ? byId(S.members, id) : null; const used = new Set(S.members.map(x => x.color)); let free = 0; while (used.has(free) && free < 11) free++;
+  openForm(m ? 'Edit ' + m.name : 'Add a person', [{ k: 'name', l: 'Name', req: true, max: 30 }, { k: 'emoji', l: 'Emoji', t: 'emoji', emojis: PEOPLE_EMOJI }, { k: 'color', l: 'Calendar color', t: 'color' }, { k: 'kid', l: 'Kid (earns stars for chores)', t: 'check' }, { k: 'birthday', l: 'Birthday (optional — adds a countdown)', t: 'date' }],
+    m ? Object.assign({}, m) : { name: '', emoji: '🙂', color: free, kid: false, birthday: '' }, v => {
+      if (v.birthday && v.birthday > today()) { fieldErr('birthday', 'A birthday can’t be in the future.'); return false; }
+      return commit(d => { const f = { name: v.name, emoji: v.emoji, color: v.color, kid: !!v.kid, birthday: v.birthday || '' }; if (m) { const x = byId(d.members, m.id); if (!x) return 'Not found.'; Object.assign(x, f); } else { if (d.members.length >= LIMITS.members) return 'Up to ' + LIMITS.members + ' people.'; d.members.push(Object.assign({ id: uid('m') }, f)); } }, { toast: m ? 'Saved' : v.name + ' added' }) ? undefined : false;
+    },
+    m ? () => undoable(m.name + ' removed', d => { d.members = d.members.filter(x => x.id !== m.id); for (const e of d.events) e.who = e.who.filter(w => w !== m.id); for (const c of d.chores) if (c.who === m.id) c.who = ''; for (const l of d.log) if (l.by === m.id) l.by = ''; for (const n of d.notes) if (n.by === m.id) n.by = ''; d.redeems = d.redeems.filter(r => r.memberId !== m.id); }) : null,
+    { delLabel: 'Remove', delTitle: m ? 'Remove ' + m.name + '?' : '', delMsg: () => m ? 'Their chores become “Anyone”, they are taken off events, and their ' + plural(starBalance(m.id), 'star') + ' are lost. You can undo right after.' : '' });
+}
+
+/* ---------- chores ---------- */
+function openChore(id) {
+  const c = id ? byId(S.chores, id) : null; const td = today();
+  const v = c ? Object.assign({}, c, { days: c.days.length ? c.days : [weekday(td)], date: c.date || td }) : { name: '', emoji: '', who: UI.choreWho || '', stars: 1, freq: 'daily', every: 3, days: [weekday(td)], monthDay: +td.slice(8), date: td, start: td, note: '', archived: false };
+  const fields = [
+    { k: 'name', l: 'Chore', req: true, max: 60, ph: 'e.g. Feed the dog' }, { k: 'emoji', l: 'Emoji (optional)', t: 'emoji', emojis: CHORE_EMOJI },
+    { k: 'who', l: 'Whose job?', t: 'select', opts: memberOpts(), half: true }, { k: 'stars', l: 'Stars earned (0–20)', t: 'int', min: 0, maxv: 20, half: true },
+    { k: 'freq', l: 'How often?', t: 'seg', opts: Object.entries(CFREQ) },
+    { k: 'every', l: 'Every how many days?', t: 'int', min: 2, maxv: 365, show: x => x.freq === 'days', hint: 'Counts from the day it was last done.' },
+    { k: 'days', l: 'Which days?', t: 'checks', req: true, opts: [0, 1, 2, 3, 4, 5, 6].map(i => [i, wdShort(i)]), show: x => x.freq === 'weekly' },
+    { k: 'monthDay', l: 'Day of the month (1–31)', t: 'int', min: 1, maxv: 31, show: x => x.freq === 'monthly', hint: '29–31 use the last day in shorter months.' },
+    { k: 'date', l: 'Which day?', t: 'date', req: true, show: x => x.freq === 'once' },
+    { k: 'start', l: 'First time it’s due', t: 'date', req: true, show: x => x.freq !== 'once' },
+    { k: 'note', l: 'Note (optional)', max: 140 }
+  ];
+  if (c) fields.push({ k: 'archived', l: 'Pause this chore (keeps its history)', t: 'check' });
+  openForm(c ? 'Edit chore' : 'Add a chore', fields, v, x => {
+    const f = { name: x.name, emoji: x.emoji, who: x.who || '', stars: x.stars, freq: x.freq, every: x.freq === 'days' ? x.every : (c ? c.every : 2), days: x.freq === 'weekly' ? x.days : [], monthDay: x.freq === 'monthly' ? x.monthDay : (c ? c.monthDay : 1), date: x.freq === 'once' ? x.date : '', start: x.freq === 'once' ? (x.date || td) : x.start, note: x.note, archived: c ? !!x.archived : false };
+    return commit(d => { if (c) { const y = byId(d.chores, c.id); if (!y) return 'This chore no longer exists.'; Object.assign(y, f); } else { if (d.chores.length >= LIMITS.chores) return 'Chore limit reached (' + LIMITS.chores + ').'; d.chores.push(Object.assign({ id: uid('c') }, f)); } }, { toast: c ? 'Chore saved' : 'Chore added' }) ? undefined : false;
+  }, c ? () => undoable('“' + c.name + '” deleted', d => { d.chores = d.chores.filter(y => y.id !== c.id); d.log = d.log.filter(l => l.choreId !== c.id); }) : null,
+  { delTitle: c ? 'Delete “' + c.name + '”?' : '', delMsg: c ? 'Its history (' + plural(S.log.filter(l => l.choreId === c.id).length, 'record') + ') and the stars it earned go too. Tip: “Pause” keeps them. You can undo right after.' : '', focus: '#f_name' });
+}
+function markDone(id, by) {
+  const c = byId(S.chores, id); if (!c) return false; const td = today();
+  if (doneRec(id, td)) { toast('Already done today ✓'); return false; }
+  let who = c.who;
+  if (!who && by === undefined && S.members.length) { pickWho(c); return false; }
+  if (!who) who = by && memberOf(by) ? by : '';
+  const m = memberOf(who); const cheers = ['Nice work', 'High five', 'Way to go', 'Teamwork', 'Done and dusted'];
+  return undoable(cheers[S.log.length % cheers.length] + (m ? ', ' + m.name : '') + '! “' + c.name + '”' + (c.stars && m ? ' +' + plural(c.stars, 'star') : ''), d => { if (d.log.length >= LIMITS.log) return 'Chore history is full. Clear old history in Settings first.'; d.log.push({ id: uid('l'), choreId: id, date: td, at: Date.now(), by: who, stars: m ? c.stars : 0 }); });
+}
+function pickWho(c) {
+  ask({ title: 'Who did “' + c.name + '”?', no: 'Cancel', yes: 'Nobody in particular', html: html`<p class="muted">${c.stars ? 'They get ' + plural(c.stars, 'star') + '.' : 'Pick who did it.'}</p><div class="pickgrid">${S.members.map(m => html`<button type="button" class="btn ghost pick" style="--mc:${mColor(m)}" data-act="donepick" data-live="1" data-v="${c.id + '|' + m.id}">${mdot(m)}${mLabel(m)}</button>`)}</div>`, fn: () => markDone(c.id, '') });
+}
+function unDone(id) { undoable('Unticked', d => { d.log = d.log.filter(l => !(l.choreId === id && l.date === today())); }); }
+
+/* ---------- rewards ---------- */
+function openReward(id) {
+  const r = id ? byId(S.rewards, id) : null;
+  openForm(r ? 'Edit reward' : 'Add a reward', [{ k: 'emoji', l: 'Emoji', t: 'emoji', emojis: '🎁 🎬 📱 🌙 🍦 🍕 🎮 🧸 🎨 🛝 🏊 💵'.split(' ') }, { k: 'name', l: 'Reward', req: true, max: 50, ph: 'e.g. Pick dinner on Friday' }, { k: 'cost', l: 'Costs how many stars?', t: 'int', min: 1, maxv: 9999 }], r || { emoji: '🎁', name: '', cost: 10 },
+    v => commit(d => { if (r) { const x = byId(d.rewards, r.id); if (!x) return 'Not found.'; Object.assign(x, v); } else { if (d.rewards.length >= LIMITS.rewards) return 'Reward limit reached.'; d.rewards.push(Object.assign({ id: uid('r') }, v)); } }, { toast: 'Reward saved' }) ? undefined : false,
+    r ? () => undoable('Reward deleted', d => { d.rewards = d.rewards.filter(x => x.id !== r.id); }) : null, { delMsg: 'Rewards already used stay in the history. You can undo right after.' });
+}
+function openRedeem(rid) {
+  const r = byId(S.rewards, rid); if (!r) return;
+  const list = (S.members.some(m => m.kid) ? S.members.filter(m => m.kid) : S.members);
+  ask({ title: 'Who is using ' + plural(r.cost, 'star') + '?', info: true, yes: 'Cancel', html: html`<p><b>${r.emoji} ${r.name}</b></p><div class="pickgrid">${list.map(m => { const b = starBalance(m.id); return html`<button type="button" class="btn ghost pick" style="--mc:${mColor(m)}" data-act="redeempick" data-live="1" data-v="${r.id + '|' + m.id}" ${b < r.cost ? raw('disabled') : ''}>${mdot(m)}${mLabel(m)} <span class="tiny">⭐ ${b}${b < r.cost ? ' · needs ' + (r.cost - b) + ' more' : ''}</span></button>`; })}</div>` });
+}
+function redeem(rid, mid) {
+  const r = byId(S.rewards, rid), m = memberOf(mid); if (!r || !m) return;
+  if (starBalance(mid) < r.cost) { toast(m.name + ' needs ' + plural(r.cost - starBalance(mid), 'more star') + '.'); return; }
+  undoable('🎉 ' + m.name + ' used ' + plural(r.cost, 'star') + ': ' + r.name, d => { d.redeems.push({ id: uid('x'), memberId: mid, emoji: r.emoji, name: r.name, cost: r.cost, date: today(), at: Date.now() }); });
+}
+
+/* ---------- countdowns, info, notes, shopping, meals ---------- */
+function openCountdown(id) {
+  const c = id ? byId(S.countdowns, id) : null;
+  openForm(c ? 'Edit countdown' : 'Add a countdown', [{ k: 'emoji', l: 'Emoji', t: 'emoji', emojis: CD_EMOJI }, { k: 'name', l: 'What are we counting down to?', req: true, max: 40, ph: 'e.g. Beach trip' }, { k: 'date', l: 'Date', t: 'date', req: true }, { k: 'yearly', l: 'Every year (holidays, anniversaries)', t: 'check' }], c || { emoji: '🎉', name: '', date: addDays(today(), 14), yearly: false },
+    v => commit(d => { const f = { emoji: v.emoji, name: v.name, date: v.date, yearly: !!v.yearly }; if (c) { const x = byId(d.countdowns, c.id); if (!x) return 'Not found.'; Object.assign(x, f); } else { if (d.countdowns.length >= LIMITS.countdowns) return 'Countdown limit reached.'; d.countdowns.push(Object.assign({ id: uid('k') }, f)); } }, { toast: 'Countdown saved' }) ? undefined : false,
+    c ? () => undoable('Countdown deleted', d => { d.countdowns = d.countdowns.filter(x => x.id !== c.id); }) : null);
+}
+const INFO_STARTER = ['Pediatrician', 'Dentist', 'School office', 'Babysitter', 'Grandparents', 'Neighbor', 'Poison control', 'Allergies', 'Trash & recycling day', 'Wi-Fi name'];
+function openInfo(id) {
+  const i = id ? byId(S.info, id) : null;
+  openForm(i ? 'Edit info' : 'Add important info', [{ k: 'label', l: 'Label', req: true, max: 40, ph: 'e.g. Pediatrician' }, { k: 'value', l: 'Details', max: 200, ph: 'e.g. Dr. Lee · (555) 010-0142' }], i || { label: '', value: '' },
+    v => commit(d => { if (i) { const x = byId(d.info, i.id); if (!x) return 'Not found.'; Object.assign(x, v); } else { if (d.info.length >= LIMITS.info) return 'Info limit reached.'; d.info.push(Object.assign({ id: uid('i') }, v)); } }, { toast: 'Saved' }) ? undefined : false,
+    i ? () => undoable('Info deleted', d => { d.info = d.info.filter(x => x.id !== i.id); }) : null);
+}
+function saveMeal(date, text) { text = text.trim().slice(0, 80); if ((S.meals[date] || '') === text) return; commit(d => { if (text) d.meals[date] = text; else delete d.meals[date]; }, { toast: text ? 'Dinner saved for ' + relDay(date) : 'Dinner cleared' }); }
+function copyWeek() {
+  const days = Array.from({ length: 7 }, (_, i) => addDays(UI.week, i)); const fill = days.filter(d => !S.meals[d] && S.meals[addDays(d, -7)]);
+  if (!fill.length) { toast(days.some(d => S.meals[addDays(d, -7)]) ? 'Every day already has a dinner.' : 'Last week has no dinners to copy.'); return; }
+  undoable(plural(fill.length, 'dinner') + ' copied from last week', d => { for (const x of fill) d.meals[x] = d.meals[addDays(x, -7)]; });
+}
+
+/* ---------- themes ---------- */
+function showThemes() { ask({ title: 'Pick your colors', info: true, wide: true, yes: 'Done', html: html`<p class="muted">Each theme changes buttons, highlights and charts together. Family member colors stay the same. Tap one to try it.</p><div id="themeTiles">${themeTiles()}</div>` }); }
+function setPalette(k) { if (!THEMES[k]) return; if (commit(d => { d.settings.palette = k; }, { edit: false })) { applyLook(); const tt = $('#themeTiles'); if (tt) setHTML(tt, themeTiles()); toast(THEMES[k].name + ' applied'); } }
+
+/* ---------- backup / export ---------- */
+function download(name, text, type) { const url = URL.createObjectURL(new Blob([text], { type })); const a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); }
+function exportBackup() {
+  const data = Object.assign({ app: APP, version: APP_VERSION, exported: new Date().toISOString() }, clone(S)); data.settings.lastBackup = today();
+  download('BusyNest-v' + APP_VERSION + '-backup-' + today() + '.json', JSON.stringify(data), 'application/json');
+  if (!UI.recovery && storageMode === 'local') commit(d => { d.settings.lastBackup = today(); }, { edit: false, toast: 'Backup saved to your downloads. Keep it somewhere safe.' }); else toast('Backup file created.');
+}
+function csvCell(v) { if (typeof v === 'number') return String(v); let s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; }
+function csvFile(name, rows) { download(name, '﻿' + rows.map(r => r.map(csvCell).join(',')).join('\r\n') + '\r\n', 'text/csv;charset=utf-8'); }
+function exportCal() {
+  const rows = [['Date', 'Start', 'End', 'Event', 'Who', 'Where', 'Repeats', 'Note']];
+  for (const x of agenda(today(), 90)) rows.push([x.d, x.e.start || 'All day', x.e.end, x.e.title, whoText(x.e), x.e.place, repeatText(x.e), x.e.note]);
+  csvFile('BusyNest-v' + APP_VERSION + '-calendar-' + today() + '.csv', rows); toast('Calendar exported (' + plural(rows.length - 1, 'event') + ' in the next 90 days)');
+}
+function exportChores() {
+  const rows = [['Date', 'Chore', 'Done by', 'Stars']];
+  for (const l of S.log.slice().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : a.at - b.at)) { const c = byId(S.chores, l.choreId); const m = memberOf(l.by); rows.push([l.date, c ? c.name : '', m ? m.name : '', l.stars]); }
+  csvFile('BusyNest-v' + APP_VERSION + '-chores-' + today() + '.csv', rows); toast('Chore history exported (' + plural(rows.length - 1, 'record') + ')');
+}
+function importFile(file) {
+  if (!file) return;
+  if (file.size > 9 * 1024 * 1024) { toast('That file is larger than 9 MB, so nothing was changed.'); return; }
+  const rd = new FileReader();
+  rd.onload = () => {
+    const no = msg => ask({ title: 'Backup not restored', info: true, msg });
+    let obj; try { obj = JSON.parse(String(rd.result)); } catch (e) { no('This file is not a readable backup, so nothing was changed.'); return; }
+    if (!obj || typeof obj !== 'object' || !Array.isArray(obj.events) || !Array.isArray(obj.chores)) { no('This file is not a Busy Nest backup, so nothing was changed.'); return; }
+    if (obj.app !== undefined && obj.app !== APP) { no('This backup is from a different app, so nothing was changed.'); return; }
+    if (typeof obj.schema === 'number' && obj.schema > SCHEMA) { no('This backup was made by a newer version of Busy Nest, so nothing was changed.'); return; }
+    for (const [k, lim] of Object.entries(LIMITS)) if (Array.isArray(obj[k]) && obj[k].length > lim) { no('This backup has more ' + k + ' than Busy Nest can hold (' + lim + '), so nothing was changed.'); return; }
+    if (countDupIds(obj).length) { no('This backup looks damaged (repeated IDs), so nothing was changed. Try an earlier backup.'); return; }
+    const s = sanitize(obj); if (!s.data) { no('This backup could not be read, so nothing was changed.'); return; }
+    const d = s.data; if (JSON.stringify(d).length > STORE_MAX) { no('This backup is too large for browser storage, so nothing was changed.'); return; }
+    const fixList = s.fixes.length ? html`<div class="banner"><p><b>${plural(s.fixes.length, 'thing')} in this file will be repaired:</b></p><ul class="small" style="margin:0;width:100%">${s.fixes.slice(0, 12).map(f => html`<li>${f}</li>`)}${s.fixes.length > 12 ? html`<li>…and ${s.fixes.length - 12} more</li>` : ''}</ul></div>` : '';
+    ask({ title: 'Restore this backup?', yes: 'Replace my data', danger: true, html: html`<p data-testid="restore-msg">“${file.name}” has ${plural(d.members.length, 'person', 'people')}, ${plural(d.events.length, 'event')} and ${plural(d.chores.length, 'chore')}. Everything currently here will be replaced.</p>${fixList}`, fn: () => restoreData(d, 'Backup restored') });
+  };
+  rd.onerror = () => toast('The file could not be read, so nothing was changed.');
+  rd.readAsText(file);
+}
+function restoreData(d, msg) {
+  const prev = S, wasRecovery = UI.recovery; S = d;
+  if (!save() && storageMode === 'local') { S = prev; if (!wasRecovery) { save(); render(); } ask({ title: 'Backup not restored', info: true, msg: saveMsg + ' Your current data is safe.' }); return false; }
+  UI.recovery = null; UI.week = null; UI.who = ''; UI.choreWho = ''; applyLook(); render(); toast(msg); return true;
+}
+function openPurge() {
+  openForm('Clear chore history before…', [{ k: 'date', l: 'Remove done records dated before', t: 'date', req: true }], { date: addDays(today(), -365) }, v => {
+    const n = S.log.filter(l => l.date < v.date).length; if (!n) { toast('No history before ' + dLong(v.date) + '.'); return false; }
+    ask({ title: 'Remove ' + plural(n, 'record') + '?', msg: 'Done records before ' + dFull(v.date) + ' will be removed. Stars earned by those chores are removed from balances too. Chores and their schedules stay as they are.', yes: 'Remove ' + n, danger: true, fn: () => { closeLayer('modal'); undoable(plural(n, 'record') + ' removed', d => { d.log = d.log.filter(l => l.date >= v.date); }); } });
+    return false;
+  }, null, { saveLabel: 'Continue' });
+}
+function keepPrefs() { const s = S.settings; return { weekStart: s.weekStart, clock: s.clock, theme: s.theme, palette: s.palette, custom: s.custom, lastBackup: s.lastBackup }; }
+function startFresh() { ask({ title: 'Start my own family?', msg: S.sampleEdited ? 'You changed some of the Riveras’ example. Starting your own removes the example, including your changes.' : 'This clears the Riveras’ example. Your color choices stay.', yes: 'Start my own', danger: S.sampleEdited, fn: () => { if (restoreData(blankData(keepPrefs()), 'Your own nest is ready. Add your family first.')) { UI.view = 'today'; render(); } } }); }
+function loadSample() { ask({ title: 'Load the example family?', msg: 'This replaces everything here with the Riveras’ example. Save a backup first if you want to keep your data.', yes: 'Load example', danger: true, fn: () => restoreData(sampleData(keepPrefs()), 'Example family loaded') }); }
+function eraseAll() { ask({ title: 'Erase everything?', msg: 'This deletes every person, event, chore, note and setting in this browser. It cannot be undone. Backup files you saved are not affected.', yes: 'Erase everything', danger: true, fn: () => { if (restoreData(blankData(), 'Everything erased')) { UI.view = 'today'; render(); } } }); }
+function addStarter() {
+  const have = new Set(S.chores.map(t => t.name.toLowerCase())); const rows = STARTER.filter(r => !have.has(r[1].toLowerCase()));
+  if (!rows.length) { toast('You already have all the starter chores.'); return; }
+  ask({ title: 'Add ' + rows.length + ' starter chores?', msg: 'Kid-friendly chores worth 1–2 stars each, set to “Anyone”. Open any chore to give it to someone, change its days, or delete it.', yes: 'Add them', fn: () => undoable(rows.length + ' starter chores added', d => { if (d.chores.length + rows.length > LIMITS.chores) return 'Chore limit reached.'; for (const r of rows) d.chores.push(starterChore(r, today())); }) });
+}
+function addInfoStarter() { const have = new Set(S.info.map(i => i.label.toLowerCase())); const rows = INFO_STARTER.filter(x => !have.has(x.toLowerCase())); if (!rows.length) { toast('Those labels are already there.'); return; } undoable(plural(rows.length, 'label') + ' added — tap one to fill it in', d => { for (const l of rows) d.info.push({ id: uid('i'), label: l, value: '' }); }); }
+
+const ACTIONS = {
+  newev: el => openEvent(null, el.dataset.v), editev: el => openEvent(el.dataset.v, el.dataset.d),
+  newchore: () => openChore(), editchore: el => openChore(el.dataset.v), done: el => markDone(el.dataset.v), undone: el => unDone(el.dataset.v),
+  donepick: el => { const [c, m] = el.dataset.v.split('|'); closeLayer('confirm'); markDone(c, m); },
+  newmember: () => openMember(), editmember: el => openMember(el.dataset.v), starter: () => addStarter(),
+  newreward: () => openReward(), editreward: el => openReward(el.dataset.v), redeem: el => openRedeem(el.dataset.v),
+  redeempick: el => { const [r, m] = el.dataset.v.split('|'); closeLayer('confirm'); redeem(r, m); },
+  redeemdel: el => undoable('Stars given back', d => { d.redeems = d.redeems.filter(x => x.id !== el.dataset.v); }),
+  newcd: () => openCountdown(), editcd: el => openCountdown(el.dataset.v), newinfo: () => openInfo(), editinfo: el => openInfo(el.dataset.v), infostarter: () => addInfoStarter(),
+  notepin: el => commit(d => { const n = byId(d.notes, el.dataset.v); if (n) n.pinned = !n.pinned; }),
+  notedel: el => undoable('Note deleted', d => { d.notes = d.notes.filter(n => n.id !== el.dataset.v); }),
+  shoptoggle: el => commit(d => { const s = byId(d.shop, el.dataset.v); if (s) s.done = !s.done; }),
+  shopdel: el => undoable('Item removed', d => { d.shop = d.shop.filter(s => s.id !== el.dataset.v); }),
+  shopclear: () => { const n = S.shop.filter(s => s.done).length; undoable(plural(n, 'checked item') + ' cleared', d => { d.shop = d.shop.filter(s => !s.done); }); },
+  editmeal: el => { UI.week = weekStartOf(el.dataset.v); UI.view = 'meals'; render(); const i = $('#meal_' + el.dataset.v); if (i) i.focus(); },
+  copyweek: () => copyWeek(), hidesetup: () => commit(d => { d.settings.setupHidden = true; }, { edit: false }),
+  whofilter: el => { UI.who = el.dataset.v; render(); }, chorewho: el => { UI.choreWho = el.dataset.v; render(); },
+  agenda: el => { UI.agenda = [7, 14, 30].includes(Number(el.value)) ? Number(el.value) : 14; render(); },
+  help: el => { const h = HELP[el.dataset.v]; if (h) ask({ title: h[0], html: h[1], info: true }); },
+  wprev: () => { UI.week = addDays(UI.week, -7); render(); }, wnext: () => { UI.week = addDays(UI.week, 7); render(); }, wtoday: () => { UI.week = weekStartOf(today()); render(); },
+  themes: () => showThemes(), palette: el => setPalette(el.dataset.v), print: () => window.print(), printday: () => window.print(),
+  export: () => exportBackup(), exportcal: () => exportCal(), exportchores: () => exportChores(), purge: () => openPurge(), loadsample: () => loadSample(), startfresh: () => startFresh(), erase: () => eraseAll()
+};
+
+/* ==========================================================================
+   Example family — the Riveras. Deterministic, generated relative to today
+   so it looks lived-in on any date. Nothing "done" is ever future-dated.
+   ========================================================================== */
+function seeded(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function sampleData(keep) {
+  const rnd = seeded(20261018); const d = blankData(keep); d.isSample = true; d.settings.family = 'Rivera';
+  const t = today(); const ty = +t.slice(0, 4);
+  const bday = (offset, age) => { const x = addDays(t, offset); return (+x.slice(0, 4) - age) + x.slice(4); };
+  const safeBday = s => isDate(s) ? s : s.slice(0, 8) + '28';
+  d.members = [
+    { id: 'mdana', name: 'Dana', emoji: '👩', color: 1, kid: false, birthday: safeBday(bday(200, 39)) },
+    { id: 'mmarcus', name: 'Marcus', emoji: '👨', color: 2, kid: false, birthday: '' },
+    { id: 'mellie', name: 'Ellie', emoji: '👧', color: 3, kid: true, birthday: safeBday(bday(23, 12)) },
+    { id: 'mnoah', name: 'Noah', emoji: '👦', color: 0, kid: true, birthday: safeBday(bday(140, 8)) }];
+  const anchor = addDays(t, -63); const fifth = t.slice(0, 8) + '15' <= t ? t.slice(0, 8) + '15' : addDays(t.slice(0, 8) + '01', -1).slice(0, 8) + '15';
+  let conf = addDays(t, 1); while (![2, 4].includes(weekday(conf))) conf = addDays(conf, 1);
+  let dent = addDays(t, 4); while ([0, 6].includes(weekday(dent))) dent = addDays(dent, 1);
+  const anniv = addDays(t, 75); const annivDate = safeBday((+anniv.slice(0, 4) - 14) + anniv.slice(4));
+  const E = (id, emoji, title, who, repeat, date, days, start, end, place, note) => ({ id, emoji, title, who, repeat, date, days: days || [], start: start || '', end: end || '', place: place || '', until: '', skips: [], note: note || '' });
+  d.events = [
+    E('e01', '🏫', 'School drop-off', ['mdana', 'mellie', 'mnoah'], 'weekly', anchor, [1, 2, 3, 4, 5], '07:45', '08:15', 'Maple Elementary'),
+    E('e02', '⚽', 'Soccer practice', ['mnoah', 'mmarcus'], 'weekly', anchor, [2, 4], '16:00', '17:15', 'Riverside Park', 'Bring shin guards'),
+    E('e03', '🎹', 'Piano lesson', ['mellie'], 'weekly', anchor, [3], '16:30', '17:15', 'Ms. Patel’s studio'),
+    E('e04', '🏊', 'Swim team', ['mellie', 'mdana'], 'weekly', anchor, [2], '17:30', '18:30', 'Community pool'),
+    E('e05', '💼', 'Late shift', ['mmarcus'], 'biweekly', anchor, [3], '14:00', '22:00', 'Work'),
+    E('e06', '🍿', 'Family movie night', [], 'weekly', anchor, [5], '19:00', '21:00', 'Living room'),
+    E('e07', '⚽', 'Soccer game', ['mnoah', 'mmarcus'], 'weekly', anchor, [6], '09:00', '10:30', 'Riverside Park'),
+    E('e08', '🛒', 'Grocery run', ['mdana'], 'weekly', anchor, [6], '11:00', '12:00', 'Green Market'),
+    E('e09', '🥞', 'Pancake breakfast', [], 'weekly', anchor, [0], '09:00', '10:00'),
+    E('e10', '🗑️', 'Trash & recycling pickup', [], 'weekly', anchor, [2], '', '', '', 'Bins out the night before'),
+    E('e11', '📚', 'Library day', ['mnoah'], 'biweekly', anchor, [1], '', '', 'Bring library books back'),
+    E('e12', '📖', 'Book club', ['mdana'], 'monthly', fifth, [], '19:30', '21:00', 'Jen’s house'),
+    E('e13', '💍', 'Wedding anniversary', ['mdana', 'mmarcus'], 'yearly', annivDate, [], '', ''),
+    E('e14', '🏫', 'Parent–teacher conference', ['mdana', 'mmarcus'], 'once', conf, [], '16:30', '17:00', 'Room 12'),
+    E('e15', '🦷', 'Dentist checkup', ['mellie', 'mdana'], 'once', dent, [], '10:00', '11:00', 'Smile Dental'),
+    E('e16', '👵', 'Grandma visits', [], 'once', addDays(t, 10), [], '', '', '', 'Airport pickup at 3 PM')];
+  const cstart = addDays(t, -35);
+  const C = (id, emoji, name, who, stars, freq, days, every) => ({ id, emoji, name, who, stars, freq, every: every || 2, days: freq === 'weekly' ? days : [], monthDay: 1, date: '', start: cstart, archived: false, note: '' });
+  d.chores = [
+    C('c01', '🛏️', 'Make your bed', 'mellie', 1, 'daily'), C('c02', '🍽️', 'Set the table', 'mellie', 1, 'daily'), C('c03', '🍽️', 'Unload the dishwasher', 'mellie', 2, 'days', null, 2), C('c04', '🎹', 'Practice piano', 'mellie', 2, 'weekly', [1, 2, 4, 5]),
+    C('c05', '🛏️', 'Make your bed', 'mnoah', 1, 'daily'), C('c06', '🐶', 'Feed Biscuit', 'mnoah', 1, 'daily'), C('c07', '🎒', 'Pack your school bag', 'mnoah', 1, 'weekly', [0, 1, 2, 3, 4]), C('c08', '🧽', 'Clear the table', 'mnoah', 1, 'daily'), C('c09', '🧸', 'Tidy your room', 'mnoah', 2, 'weekly', [3, 6]),
+    C('c10', '🗑️', 'Take out the trash', 'mmarcus', 0, 'weekly', [1, 4]), C('c11', '🌿', 'Mow the lawn', 'mmarcus', 0, 'weekly', [6]), C('c12', '🪴', 'Water the plants', 'mdana', 0, 'weekly', [0]),
+    C('c13', '👕', 'Put clean laundry away', '', 2, 'weekly', [6]), C('c14', '🛒', 'Help put groceries away', '', 2, 'weekly', [6]), C('c15', '🧹', 'Tidy the living room', '', 1, 'daily')];
+  d.rewards = defaultRewards();
+  const S0 = S; S = d;
+  try {
+    let n = 0;
+    for (let day = cstart; day < t; day = addDays(day, 1)) {
+      for (const x of d.chores) {
+        const st = status(x, day); if (st.s !== 'today' && st.s !== 'waiting') continue;
+        if (rnd() > (st.s === 'today' ? 0.8 : 0.5)) continue;
+        const by = x.who || (rnd() < 0.5 ? 'mellie' : 'mnoah'); const hour = 7 + Math.floor(rnd() * 13);
+        d.log.push({ id: 'l' + (n++).toString(36), choreId: x.id, date: day, at: parseD(day).getTime() + hour * 3600e3, by, stars: x.stars });
+      }
+    }
+    const now = new Date();
+    if (now.getHours() >= 8) for (const id of ['c01', 'c05', 'c06']) { const x = d.chores.find(y => y.id === id); const st = status(x, t); if (st.s === 'today' || st.s === 'waiting') d.log.push({ id: 'l' + (n++).toString(36), choreId: id, date: t, at: Math.min(Date.now() - 60000, new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 40).getTime()), by: x.who, stars: x.stars }); }
+    d.redeems = [{ id: 'x1', memberId: 'mellie', emoji: '🎬', name: 'Pick the family movie', cost: 10, date: addDays(t, -6), at: parseD(addDays(t, -6)).getTime() + 18 * 3600e3 }, { id: 'x2', memberId: 'mnoah', emoji: '📱', name: 'Extra 30 minutes of screen time', cost: 15, date: addDays(t, -3), at: parseD(addDays(t, -3)).getTime() + 17 * 3600e3 }];
+    const dinners = ['Taco night', 'Spaghetti & meatballs', 'Sheet-pan chicken & veggies', 'Breakfast for dinner', 'Homemade pizza', 'Leftovers', 'Grilled cheese & tomato soup', 'Teriyaki salmon & rice', 'Chili & cornbread', 'Burrito bowls'];
+    for (let i = -10; i <= 5; i++) d.meals[addDays(t, i)] = dinners[(i + 10) % dinners.length];
+    const sh = [['Milk', 'dairy'], ['Bananas', 'produce'], ['Bread', 'bakery'], ['Chicken thighs', 'meat'], ['Trash bags', 'household'], ['Poster board (science fair)', 'other'], ['Apples', 'produce', true], ['Cereal', 'pantry', true], ['Frozen peas', 'frozen']];
+    d.shop = sh.map((x, i) => ({ id: 's' + i, text: x[0], cat: x[1], done: !!x[2], at: i + 1 }));
+    d.notes = [{ id: 'n1', text: 'Picture day on Thursday — blue shirt for Noah!', pinned: true, by: 'mdana', at: 3 }, { id: 'n2', text: 'Grandma lands at 3 PM. Who can do the airport pickup?', pinned: true, by: 'mmarcus', at: 2 }, { id: 'n3', text: 'Science fair poster due next Monday', pinned: false, by: 'mellie', at: 1 }, { id: 'n4', text: 'Call the plumber about the kitchen sink', pinned: false, by: 'mmarcus', at: 0 }];
+    d.info = [['Pediatrician', 'Dr. Lee · (555) 010-0142'], ['School office', 'Maple Elementary · (555) 010-0199'], ['Babysitter', 'Kayla · (555) 010-0175'], ['Grandma', '(555) 010-0123'], ['Poison control (US)', '1-800-222-1222'], ['Allergies', 'Noah — peanuts'], ['Trash & recycling day', 'Tuesday morning (bins out Monday night)'], ['Wi-Fi name', 'RiveraHome']].map((x, i) => ({ id: 'i' + i, label: x[0], value: x[1] }));
+    d.countdowns = [{ id: 'k1', name: 'Grandma visits', emoji: '👵', date: addDays(t, 10), yearly: false }, { id: 'k2', name: 'Beach trip', emoji: '🏖️', date: addDays(t, 38), yearly: false }, { id: 'k3', name: 'Winter break', emoji: '❄️', date: addDays(t, 52), yearly: false }];
+  } finally { S = S0; }
+  return d;
+}
+
+/* ==========================================================================
+   Render, events, recovery, boot
+   ========================================================================== */
+let lastRenderDay = '';
+function render() {
+  if (UI.recovery) { renderRecovery(); return; }
+  lastRenderDay = today();
+  applyLookCached();
+  renderSide(); renderTop();
+  const key = UI.view + '|' + UI.week + '|' + UI.who + '|' + UI.choreWho; const v = $('#view');
+  v.classList.toggle('anim', key !== UI.lastAnim); UI.lastAnim = key;
+  const fn = { today: vToday, calendar: vCalendar, chores: vChores, meals: vMeals, board: vBoard, settings: vSettings, guide: vGuide }[UI.view] || vToday;
+  setHTML(v, fn());
+  setHTML($('#footer'), html`${APP} v${APP_VERSION} · Busy Nest never sends your data anywhere. It is stored in this browser on this computer.`);
+  $('#app').hidden = false; $('#fab').hidden = false;
+}
+let _lookKey = '';
+function applyLookCached() { const k = JSON.stringify([S.settings.palette, S.settings.custom, S.settings.theme]); if (k !== _lookKey) { _lookKey = k; applyLook(); } }
+
+/* ---------- recovery / repair screen ---------- */
+function renderRecovery() {
+  const r = UI.recovery; $('#fab').hidden = true;
+  setHTML($('#side'), html`<div class="brand">${LOGO}<div><b>${APP}</b><span>v${APP_VERSION}</span></div></div>`); setHTML($('#topbar'), html`<div id="saveChip"><span class="chip bad"><span class="dot"></span>Paused — nothing is being saved</span></div>`); setHTML($('#sampleBanner'), html``);
+  const ok = UI.rawExported;
+  setHTML($('#view'), html`<div class="recov"><div class="eyebrow">Your saved data</div><h1>${r.data ? 'Your data needs a small repair' : 'Your saved data could not be opened'}</h1>
+    <p class="lead" style="margin-top:10px">Nothing has been changed or overwritten. Busy Nest will not save anything until you choose what to do — even if you reload.</p>
+    ${r.fixes && r.fixes.length ? html`<div class="banner"><p><b>What we found (${r.fixes.length}):</b></p><ul class="small" style="margin:0;width:100%">${r.fixes.slice(0, 15).map(f => html`<li>${f}</li>`)}${r.fixes.length > 15 ? html`<li>…and ${r.fixes.length - 15} more</li>` : ''}</ul></div>` : html`<div class="banner bad"><p>${r.reason}</p></div>`}
+    <div class="card" style="margin:16px 0"><h2>Step 1 · Save a copy of exactly what is stored</h2><p class="muted">Keep this file. It may help recover entries later.</p><button class="btn primary" type="button" id="recRaw">Download the stored data (${Math.ceil(r.raw.length / 1024)} KB)</button>${ok ? html` <span class="tag good">Saved ✓</span>` : ''}</div>
+    <div class="card"><h2>Step 2 · Choose what to do</h2>${!ok ? html`<p class="small muted">These unlock after Step 1.</p>` : ''}<div class="row" style="margin-top:10px">
+    ${r.data ? html`<button class="btn primary" type="button" id="recFix" ${ok ? '' : raw('disabled')}>Apply the repairs</button>` : ''}
+    <label class="btn ghost ${ok ? '' : 'disabled'}" for="recFile" ${ok ? '' : raw('aria-disabled="true" style="opacity:.5;pointer-events:none"')}>Restore a backup</label><input type="file" id="recFile" accept=".json,application/json" hidden ${ok ? '' : raw('disabled')}>
+    <button class="btn ghost" type="button" id="recSample" ${ok ? '' : raw('disabled')}>Start with the example family</button><button class="btn danger" type="button" id="recFresh" ${ok ? '' : raw('disabled')}>Start fresh</button></div></div></div>`);
+  $('#recRaw').onclick = () => { download('BusyNest-stored-data-' + today() + '.txt', r.raw, 'text/plain'); UI.rawExported = true; renderRecovery(); };
+  const fix = $('#recFix'); if (fix) fix.onclick = () => restoreData(r.data, 'Repairs applied');
+  $('#recFile').onchange = e => { const f = e.target.files[0]; e.target.value = ''; importFile(f); };
+  $('#recSample').onclick = () => restoreData(sampleData(), 'Example family loaded');
+  $('#recFresh').onclick = () => ask({ title: 'Start fresh?', msg: 'The damaged data will be replaced with an empty family plan. You saved a copy in Step 1.', yes: 'Start fresh', danger: true, fn: () => restoreData(blankData(), 'Fresh start') });
+  $('#app').hidden = false;
+}
+
+/* ---------- tooltip & donut highlight ---------- */
+function showTip(el, x, y) { const tip = $('#tip'); tip.textContent = el.getAttribute('data-tip'); tip.style.display = 'block'; const r = tip.getBoundingClientRect(); let lx = x - r.width / 2, ly = y - r.height - 12; lx = Math.max(6, Math.min(innerWidth - r.width - 6, lx)); if (ly < 6) ly = y + 16; tip.style.left = lx + 'px'; tip.style.top = ly + 'px'; }
+function hideTip() { $('#tip').style.display = 'none'; }
+function donutHL(el) {
+  const w = el.closest('.donutwrap'); if (!w) return; const i = el.dataset.seg;
+  w.classList.add('hl'); $$('[data-seg]', w).forEach(x => x.classList.toggle('on', x.dataset.seg === i));
+  $('.cl', w).textContent = el.dataset.l; $('.cv', w).textContent = el.dataset.val; $('.cp', w).textContent = el.dataset.pct + '% of total';
+}
+function donutReset(w) { if (!w) return; w.classList.remove('hl'); $$('[data-seg]', w).forEach(x => x.classList.remove('on')); $('.cl', w).textContent = w.dataset.cl; $('.cv', w).textContent = w.dataset.cv; $('.cp', w).textContent = ''; }
+
+/* ---------- events (one delegated listener per type) ---------- */
+function wire() {
+  document.addEventListener('click', e => {
+    const close = e.target.closest('[data-close]'); if (close) { e.preventDefault(); if (close.dataset.close === 'modal') requestClose(); else closeLayer('confirm'); return; }
+    const nav = e.target.closest('[data-nav]'); if (nav && !e.target.closest('#modal,#confirm')) { e.preventDefault(); UI.view = nav.dataset.nav; render(); window.scrollTo(0, 0); const h = $('#view h1'); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } return; }
+    if (nav && e.target.closest('#confirm')) { e.preventDefault(); closeLayer('confirm'); UI.view = nav.dataset.nav; render(); return; }
+    const a = e.target.closest('[data-act]'); if (!a) return;
+    if (a.closest('#modal,#confirm') && !a.dataset.live && a.dataset.act !== 'help') return;
+    const fn = ACTIONS[a.dataset.act]; if (!fn) return;
+    if (a.type !== 'checkbox') e.preventDefault();
+    fn(a);
+  });
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el.id === 'importFile') { const f = el.files[0]; el.value = ''; importFile(f); return; }
+    if (el.dataset.set) {
+      const k = el.dataset.set; let v = el.value;
+      if (k === 'weekStart') { v = Number(v); UI.week = null; }
+      if (k === 'clock' && v !== '12' && v !== '24') return;
+      if (k === 'family') v = v.trim().slice(0, 40);
+      const appearance = ['theme', 'weekStart', 'clock'].includes(k);
+      commit(d => { d.settings[k] = v; }, { edit: !appearance, toast: k === 'family' ? 'Saved' : null }); if (k === 'theme') applyLook(); return;
+    }
+    if (el.dataset.meal) { saveMeal(el.dataset.meal, el.value); return; }
+    if (el.dataset.color) { const k = el.dataset.color; const val = el.value.toUpperCase(); commit(d => { const base = d.settings.palette === 'custom' ? d.settings.custom.base : d.settings.palette; const th = THEMES[base] || THEMES.sage; if (d.settings.palette !== 'custom') d.settings.custom = { base, accent: th.accent, accent2: th.accent2, gold: th.gold }; d.settings.custom[k] = val; d.settings.palette = 'custom'; }, { edit: false, toast: 'Custom colors saved' }); return; }
+  });
+  document.addEventListener('input', e => {
+    const el = e.target;
+    if (el.dataset.color) { const th = currentTheme(); const o = { accent: th.accent, accent2: th.accent2, gold: th.gold }; o[el.dataset.color] = el.value.toUpperCase(); const v = themeVars(Object.assign({}, th, o)); const st = $('#palStyle'); if (st) { const block = x => Object.entries(x).map(([k, val]) => '--' + k + ':' + val + ';').join(''); st.textContent = ':root{' + block(v.L) + '}' + '@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){' + block(v.D) + '}}:root[data-theme="dark"]{' + block(v.D) + '}'; _lookKey = ''; } }
+  });
+  document.addEventListener('keydown', e => {
+    const open = !$('#confirm').hidden ? $('#confirm') : !$('#modal').hidden ? $('#modal') : null;
+    if (e.key === 'Escape' && open) { e.preventDefault(); if (open.id === 'confirm') { if (!(layers.confirm && layers.confirm.opts.welcome)) closeLayer('confirm'); } else requestClose(); return; }
+    if (e.key === 'Tab' && open) { const f = $$('button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"],label[for]', open).filter(x => x.offsetParent !== null && !(x.tagName === 'INPUT' && (x.type === 'radio') && !x.checked && $$('input[name="' + x.name + '"]:checked', open).length)); if (!f.length) return; const i = f.indexOf(document.activeElement); if (e.shiftKey && (i <= 0)) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && (i === f.length - 1 || i === -1)) { e.preventDefault(); f[0].focus(); } return; }
+    if (e.target.id === 'noteIn' && e.key === 'Enter') { e.preventDefault(); const v = e.target.value.trim(); if (!v) return; const by = $('#noteBy') ? $('#noteBy').value : ''; if (commit(d => { if (d.notes.length >= LIMITS.notes) return 'The board is full. Delete some old notes.'; d.notes.push({ id: uid('n'), text: v.slice(0, 300), pinned: false, by: memberOf(by) ? by : '', at: Date.now() }); }, { toast: 'Note posted' })) { const i = $('#noteIn'); if (i) i.focus(); } return; }
+    if (e.target.id === 'shopIn' && e.key === 'Enter') { e.preventDefault(); const v = e.target.value.trim(); if (!v) return; const pick = $('#shopCat').value; const cat = SHOP_CATS.some(c => c[0] === pick) ? pick : guessCat(v); if (S.shop.some(s => !s.done && s.text.toLowerCase() === v.toLowerCase())) { toast('“' + v + '” is already on the list.'); return; } if (commit(d => { if (d.shop.length >= LIMITS.shop) return 'The list is full. Clear checked items first.'; d.shop.push({ id: uid('s'), text: v.slice(0, 80), cat, done: false, at: Date.now() }); }, { toast: 'Added to ' + SHOP_CATS.find(c => c[0] === cat)[1] })) { const i = $('#shopIn'); if (i) i.focus(); const c2 = $('#shopCat'); if (c2) c2.value = pick; } return; }
+    if (e.target.dataset && e.target.dataset.meal && e.key === 'Enter') { e.preventDefault(); const id = e.target.id; saveMeal(e.target.dataset.meal, e.target.value); const i = document.getElementById(id); if (i) i.focus(); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[tabindex][data-act]') && !open) { e.preventDefault(); e.target.click(); return; }
+    if ((e.key === 'n' || e.key === 'N') && !e.ctrlKey && !e.metaKey && !e.altKey && !open && !UI.recovery && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName) && !e.target.isContentEditable) { e.preventDefault(); openEvent(); }
+  });
+  document.addEventListener('mousedown', e => { if (e.target.classList && e.target.classList.contains('layer')) { if (e.target.id === 'confirm') { if (!(layers.confirm && layers.confirm.opts.welcome)) closeLayer('confirm'); } else requestClose(); } });
+  document.addEventListener('mouseover', e => { const s = e.target.closest && e.target.closest('.donutwrap [data-seg]'); if (s) donutHL(s); else { const w = e.target.closest && e.target.closest('.donutwrap'); if (!w) $$('.donutwrap.hl').forEach(donutReset); } });
+  document.addEventListener('focusin', e => { const s = e.target.closest && e.target.closest('.donutwrap [data-seg]'); if (s) donutHL(s); else $$('.donutwrap.hl').forEach(donutReset); });
+  document.addEventListener('mouseout', e => { const w = e.target.closest && e.target.closest('.donutwrap'); if (w && !w.contains(e.relatedTarget)) donutReset(w); });
+  document.addEventListener('pointermove', e => { const t = e.target.closest && e.target.closest('[data-tip]'); if (t && !e.target.closest('#modal,#confirm')) showTip(t, e.clientX, e.clientY); else hideTip(); });
+  document.addEventListener('pointerdown', e => { if (e.pointerType === 'touch') { const t = e.target.closest && e.target.closest('[data-tip]'); if (t) showTip(t, e.clientX, e.clientY); } });
+  window.addEventListener('scroll', hideTip, { passive: true });
+  $('#fab').addEventListener('click', () => openEvent());
+  setInterval(() => { if (!UI.recovery && today() !== lastRenderDay && !anyOpen()) render(); }, 60000);
+}
+
+/* ---------- boot (§6) ---------- */
+function boot() {
+  wire();
+  let r = readRaw();
+  if (!r.ok) { storageMode = 'memory'; S = sampleData(); applyLook(); render(); updSave(); welcome(true); return; }
+  if (r.raw === null) { S = sampleData(); lastLen = JSON.stringify(S).length; applyLook(); render(); welcome(false); return; }
+  let parsed; try { parsed = JSON.parse(r.raw); } catch (e) { parsed = undefined; }
+  if (parsed === undefined) { S = blankData(); UI.recovery = { raw: r.raw, reason: 'The stored data is not readable — it may have been damaged.', fixes: [], data: null }; applyLook(); render(); return; }
+  const s = sanitize(parsed);
+  if (!s.data) { S = blankData(); UI.recovery = { raw: r.raw, reason: s.fixes[0], fixes: [], data: null }; applyLook(); render(); return; }
+  if (s.fixes.length) { S = s.data; UI.recovery = { raw: r.raw, reason: '', fixes: s.fixes, data: s.data }; applyLook(); render(); return; }
+  S = s.data; lastRaw = r.raw; lastLen = r.raw.length;
+  // probe writability with a test key (never rewrite the data itself on boot)
+  try { localStorage.setItem(LS_KEY + '.probe', '1'); localStorage.removeItem(LS_KEY + '.probe'); saveOk = true; } catch (e) { saveOk = false; saveMsg = errName(e); }
+  applyLook(); render(); updSave();
+}
+function welcome(memoryOnly) {
+  ask({ title: 'Welcome to Busy Nest', yes: 'Explore the example family', no: 'Start my own family',
+    html: html`<p>Your family’s calendar, chores & stars, dinners, shopping list and notes — together on one calm page. Everything stays in this browser on this computer: no account, no app store, no subscription.</p><p>Look around the Rivera family’s week first, or start your own right away.</p>${memoryOnly ? html`<div class="banner bad"><p>This browser is blocking storage for this file, so nothing will be kept after you close it. Try opening the file in Google Chrome.</p></div>` : ''}`,
+    fn: () => { if (!memoryOnly) { if (save()) toast('Exploring the Riveras’ week. Start your own whenever you are ready.'); } render(); },
+    after: el => { const no = $('.actions .ghost', el); no.removeAttribute('data-close'); no.onclick = () => { closeLayer('confirm'); const d = blankData(); S = d; if (!memoryOnly) save(); UI.view = 'today'; render(); toast('Your own nest is ready. Add your family first.'); }; }
+  });
+  layers.confirm.opts.welcome = true;
+}
+document.addEventListener('DOMContentLoaded', boot);
+
+</script>
+<style>
+#demoBar{position:fixed;left:0;right:0;bottom:0;z-index:9000;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;
+padding:9px max(16px,env(safe-area-inset-right,0px)) calc(9px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+background:#1f2a24;color:#fff;font:600 14px/1.35 system-ui,-apple-system,Segoe UI,sans-serif;text-align:center;box-shadow:0 -4px 18px rgba(0,0,0,.18)}
+#demoBar b{background:#f2c14e;color:#1f2a24;border-radius:999px;padding:2px 10px;font-size:12px;letter-spacing:.06em}
+#demoBar span{font-weight:500;opacity:.92}
+body{padding-bottom:64px}
+#demoBar .sm{display:none}
+@media (max-width:860px){#demoBar{bottom:64px;font-size:12px;padding-top:6px;padding-bottom:6px;flex-wrap:nowrap;gap:8px;white-space:nowrap}#demoBar .lg{display:none}#demoBar .sm{display:inline}body{padding-bottom:110px}}
+@media print{#demoBar{display:none}}
+label[for=importFile],label[for=recFile]{display:none!important}
+</style>
+<div id="demoBar" role="note"><b>FREE DEMO</b><span class="lg">Try everything — nothing is saved when you close this tab.</span><span class="lg">Full version (saves your data, backup &amp; export): search “Busy Nest” on Etsy.</span><span class="sm">Nothing is saved · full version on Etsy</span></div>
+<script>
+/* DEMO overrides, applied before the app boots */
+(function(){
+  var msg='Backup and export are in the full version of Busy Nest (on Etsy). This free demo does not save anything.';
+  try{ Object.keys(ACTIONS).forEach(function(k){ if(/^export|csv|backup/i.test(k)) ACTIONS[k]=function(){ toast(msg,null,6000); }; }); }catch(e){}
+  try{ updSave=function(){ var el=document.getElementById('saveChip'); if(el) setHTML(el, html`<span class="chip"><span class="dot"></span>Free demo · not saved</span>`); }; }catch(e){}
+  try{ welcome=function(){ ask({title:'Welcome to the Busy Nest demo',yes:'Explore the example',no:'Try it empty',
+      html: html`<p>This is a free demo. Everything works, so click around, add things and change themes.</p><p><strong>Nothing is saved:</strong> close or reload this tab and it starts over. The full version (an HTML file you keep on your computer) saves your data in your browser and adds backup and CSV export.</p>`,
+      fn:function(){ render(); },
+      after:function(el){ var no=el.querySelector('.actions .ghost'); if(no){ no.removeAttribute('data-close'); no.onclick=function(){ closeLayer('confirm'); S=blankData(); UI.view='home'; render(); toast('Empty demo ready. Nothing is saved.'); }; } } });
+    try{ layers.confirm.opts.welcome=true; }catch(e){} }; }catch(e){}
+})();
+</script>
+</body>
+</html>
